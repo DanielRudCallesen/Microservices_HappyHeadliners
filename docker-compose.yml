@@ -1,0 +1,119 @@
+﻿services:
+    global:    
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: global
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "Password123!"
+            MSSQL_PID: Developer
+        ports:
+            - "1433:1433"
+        volumes:
+        - mssql-global:/var/opt/mssql
+    europe:    
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: europe
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "Password123!"
+            MSSQL_PID: Developer
+        ports:
+            - "1433:1433"
+        volumes:
+        - mssql-europe:/var/opt/mssql
+    asia:    
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: asia
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "Password123!"
+            MSSQL_PID: Developer
+        ports:
+            - "1433:1433"
+        volumes:
+        - mssql-asia:/var/opt/mssql
+    africa:    
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: africa
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "Password123!"
+            MSSQL_PID: Developer
+        ports:
+            - "1433:1433"
+        volumes:
+        - mssql-africa:/var/opt/mssql
+    northamerica:    
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: northamerica
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "Password123!"
+            MSSQL_PID: Developer
+        ports:
+            - "1433:1433"
+        volumes:
+        - mssql-northamerica:/var/opt/mssql
+    southamerica:    
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: southamerica
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "Password123!"
+            MSSQL_PID: Developer
+        ports:
+            - "1433:1433"
+        volumes:
+        - mssql-southamerica:/var/opt/mssql
+    antarctica:    
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: antarctica
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "Password123!"
+            MSSQL_PID: Developer
+        ports:
+            - "1433:1433"
+        volumes:
+        - mssql-antarctica:/var/opt/mssql
+    australia:    
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: australia
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "Password123!"
+            MSSQL_PID: Developer
+        ports:
+            - "1433:1433"
+        volumes:
+        - mssql-australia:/var/opt/mssql
+
+    article-service:
+        build:
+            context: .
+            dockerfile: ArticleService/Dockerfile
+        depends_on:
+         - global
+         - europe
+         - asia
+         - africa
+         - northamerica
+         - southamerica
+         - antarctica
+         - australia
+        deploy:
+         replicas: 3
+        ports: 
+        - "8000-8002:80"
+
+volumes:
+    mssql-global:
+    mssql-africa:
+    mssql-asia:
+    mssql-europe:
+    mssql-northamerica:
+    mssql-southamerica:
+    mssql-antarctica:
+    mssql-australia:
+    
+    
