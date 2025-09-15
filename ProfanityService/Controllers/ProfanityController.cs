@@ -4,15 +4,10 @@ namespace ProfanityService.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProfanityController : ControllerBase
+    public class ProfanityController(ILogger<ProfanityController> logger) : ControllerBase
     {
+        private readonly ILogger<ProfanityController> _logger = logger;
 
 
-        private readonly ILogger<ProfanityController> _logger;
-
-        public ProfanityController(ILogger<ProfanityController> logger)
-        {
-            _logger = logger;
-        }
     }
 }

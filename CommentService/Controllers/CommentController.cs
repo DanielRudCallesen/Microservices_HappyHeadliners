@@ -4,13 +4,10 @@ namespace CommentService.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CommentController : ControllerBase
+    public class CommentController(ILogger<CommentController> logger) : ControllerBase
     {
-        private readonly ILogger<CommentController> _logger;
+        private readonly ILogger<CommentController> _logger = logger;
 
-        public CommentController(ILogger<CommentController> logger)
-        {
-            _logger = logger;
-        }
+
     }
 }
