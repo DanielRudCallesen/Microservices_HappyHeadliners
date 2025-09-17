@@ -61,6 +61,12 @@ services:
         volumes:
         - mssql-profanity:/var/opt/mssql
 
+    commentdatabase:
+        <<: *mssql-base
+        container_name: commentdatabase
+        volumes:
+        - mssql-comment:/var/opt/mssql
+
     profanityservice:
         build:
             context: .
@@ -73,6 +79,22 @@ services:
         - "8004:8080"
         depends_on:
             profanitydatabase: { condition: service_healthy }
+
+    commentservice:
+        build:
+            context: .
+            dockerfile: CommentService/Dockerfile
+        environment:
+            ASPNETCORE_URLS: "http://+:8080"
+            ASPNETCORE_ENVIRONMENT: "Development"
+            ConnectionStrings__CommentDatabase: "Server=commentdatabase,1433;Database=CommentDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
+            profanityservice__BaseUrl: "http://profanityservice:8080"
+        depends_on:
+            - profanityservice
+            - commentdatabase
+        ports:
+        - "8006:8080"
+        
 
 
     article-service:
@@ -112,5 +134,6 @@ volumes:
     mssql-antarctica:
     mssql-australia:
     mssql-profanity:
+    mssql-comment:
     
     

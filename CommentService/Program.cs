@@ -2,7 +2,7 @@ using CommentService.Data;
 using CommentService.Interface;
 using CommentService.Services;
 using Microsoft.EntityFrameworkCore;
-using Polly;
+using Microsoft.Extensions.Http.Resilience;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 
 // Database
 builder.Services.AddDbContext<CommentDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CommentDatabase")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CommentDatabase"), o => o.EnableRetryOnFailure()));
 
 // Local Fallback filter
 builder.Services.AddSingleton<ILocalProfanityFilter, LocalProfanityFilter>();
