@@ -36,8 +36,9 @@ namespace ArticleService.Infrastructure
             {
                 var csb = new SqlConnectionStringBuilder(cs);
                 _logger.LogInformation("Migrating {Name}: Datasource={DataSource} Database={Db}", name, csb.DataSource, csb.InitialCatalog);
+                
                 var attempts = 0;
-                while (!cancellationToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested && attempts < 8)
                 {
                     try
                     {
@@ -50,26 +51,16 @@ namespace ArticleService.Infrastructure
                         _logger.LogInformation("Database migrated: {Name}", name);
                         break;
                     }
-                    catch (Exception ex) when (attempts++ < 8)
+                    catch (SqlException ex) when (ex.Number == 1801) // Database already exists
                     {
-                        attempts++;
-                        _logger.LogWarning(ex, "Migrate attempt {Attempt} failed for {Name}. Retrying...", attempts, name);
-                        try
-                        {
-                            await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
-                        }
-                        catch {}
-
-                    }
-                    catch (Exception ex) when (attempts++ < 8)
-                    {
-                        _logger.LogWarning(ex, "Migrate attempt {Attempt} failed for {Name}. Retrying...", attempts, name);
-                        try { await Task.Delay(TimeSpan.FromSeconds(Math.Min(30, Math.Pow(2, attempts))), cancellationToken); } catch { }
+                        _logger.LogWarning(ex, "Database already exists for {Name}. Continuing...", name);
+                        break; // treat as success for startup flow
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "Migration failed for {Name}. Giving up.", name);
-                        break;
+                        attempts++;
+                        _logger.LogWarning(ex, "Migrate attempt {Attempt} failed for {Name}. Retrying...", attempts, name);
+                        try { await Task.Delay(TimeSpan.FromSeconds(Math.Min(30, Math.Pow(2, attempts))), cancellationToken); } catch { }
                     }
                 }
             }

@@ -30,11 +30,12 @@ namespace ArticleService.Data
 
         public async Task<ArticleReadDTO?> GetAsync(int id, Continent? continent, bool includeGlobalFallBack, CancellationToken ct)
         {
-            if (continent is null)
+            if (continent is not null)
             {
                 var continentRepo = _factory.CreateForContinent(continent.Value);
-                var found = await continentRepo.GetAsync(id, ct);
-                if (found != null) return Map(found);
+                var fromContinent = await continentRepo.GetAsync(id, ct);
+                if (fromContinent is not null) return Map(fromContinent);
+                
 
                 if(includeGlobalFallBack)
                 {
@@ -46,7 +47,7 @@ namespace ArticleService.Data
                 return null;
             }
             
-            // Global Only
+            // If no continent provided: use Global
             var repo = _factory.CreateGlobal();
             var article = await repo.GetAsync(id, ct);
             return article is null ? null : Map(article);
