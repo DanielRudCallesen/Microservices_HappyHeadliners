@@ -1,110 +1,106 @@
-﻿services:
+﻿
+x-mssql-base: &mssql-base
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+        ACCEPT_EULA: "Y"
+        SA_PASSWORD: "Password123!"
+        MSSQL_PID: Developer
+    expose:
+    - "1433"
+    healthcheck:
+        test: ["CMD-SHELL", "grep -q 'SQL Server is now ready for client connections' /var/opt/mssql/log/errorlog || exit 1"]
+        interval: 5s
+        timeout: 5s
+        retries: 30
+
+services:
     global:    
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        <<: *mssql-base
         container_name: global
-        environment:
-            ACCEPT_EULA: "Y"
-            SA_PASSWORD: "Password123!"
-            MSSQL_PID: Developer
-        ports:
-            - "1433:1433"
         volumes:
         - mssql-global:/var/opt/mssql
     europe:    
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        <<: *mssql-base
         container_name: europe
-        environment:
-            ACCEPT_EULA: "Y"
-            SA_PASSWORD: "Password123!"
-            MSSQL_PID: Developer
-        ports:
-            - "1433:1433"
         volumes:
         - mssql-europe:/var/opt/mssql
     asia:    
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        <<: *mssql-base
         container_name: asia
-        environment:
-            ACCEPT_EULA: "Y"
-            SA_PASSWORD: "Password123!"
-            MSSQL_PID: Developer
-        ports:
-            - "1433:1433"
         volumes:
         - mssql-asia:/var/opt/mssql
     africa:    
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        <<: *mssql-base
         container_name: africa
-        environment:
-            ACCEPT_EULA: "Y"
-            SA_PASSWORD: "Password123!"
-            MSSQL_PID: Developer
-        ports:
-            - "1433:1433"
         volumes:
         - mssql-africa:/var/opt/mssql
     northamerica:    
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        <<: *mssql-base
         container_name: northamerica
-        environment:
-            ACCEPT_EULA: "Y"
-            SA_PASSWORD: "Password123!"
-            MSSQL_PID: Developer
-        ports:
-            - "1433:1433"
         volumes:
         - mssql-northamerica:/var/opt/mssql
     southamerica:    
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        <<: *mssql-base
         container_name: southamerica
-        environment:
-            ACCEPT_EULA: "Y"
-            SA_PASSWORD: "Password123!"
-            MSSQL_PID: Developer
-        ports:
-            - "1433:1433"
         volumes:
         - mssql-southamerica:/var/opt/mssql
     antarctica:    
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        <<: *mssql-base
         container_name: antarctica
-        environment:
-            ACCEPT_EULA: "Y"
-            SA_PASSWORD: "Password123!"
-            MSSQL_PID: Developer
-        ports:
-            - "1433:1433"
         volumes:
         - mssql-antarctica:/var/opt/mssql
     australia:    
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        <<: *mssql-base
         container_name: australia
-        environment:
-            ACCEPT_EULA: "Y"
-            SA_PASSWORD: "Password123!"
-            MSSQL_PID: Developer
-        ports:
-            - "1433:1433"
         volumes:
         - mssql-australia:/var/opt/mssql
+
+    profanitydatabase:
+        <<: *mssql-base
+        container_name: profanitydatabase
+        volumes:
+        - mssql-profanity:/var/opt/mssql
+
+    profanityservice:
+        build:
+            context: .
+            dockerfile: ProfanityService/Dockerfile
+        environment:
+            ASPNETCORE_URLS: "http://+:8080"
+            ASPNETCORE_ENVIRONMENT: "Development"
+            ConnectionStrings__ProfanityDatabase: "Server=profanitydatabase,1433;Database=ProfanityDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
+        ports:
+        - "8004:8080"
+        depends_on:
+            profanitydatabase: { condition: service_healthy }
+
 
     article-service:
         build:
             context: .
             dockerfile: ArticleService/Dockerfile
+        environment:
+            ASPNETCORE_URLS: "http://+:8080"
+            ASPNETCORE_ENVIRONMENT: "Development"
+            ConnectionStrings__Articles__Global: Server=global,1433;Database=Articles_Global;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
+            ConnectionStrings__Articles__Africa: Server=africa,1433;Database=Articles_Africa;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
+            ConnectionStrings__Articles__Antarctica: Server=antarctica,1433;Database=Articles_Antarctica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
+            ConnectionStrings__Articles__Asia: Server=asia,1433;Database=Articles_Asia;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
+            ConnectionStrings__Articles__Europe: Server=europe,1433;Database=Articles_Europe;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
+            ConnectionStrings__Articles__NorthAmerica: Server=northamerica,1433;Database=Articles_NorthAmerica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
+            ConnectionStrings__Articles__Australia: Server=australia,1433;Database=Articles_Australia;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
+            ConnectionStrings__Articles__SouthAmerica: Server=southamerica,1433;Database=Articles_SouthAmerica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
         depends_on:
-         - global
-         - europe
-         - asia
-         - africa
-         - northamerica
-         - southamerica
-         - antarctica
-         - australia
-        deploy:
-         replicas: 3
+            global:        { condition: service_healthy }
+            europe:        { condition: service_healthy }
+            asia:          { condition: service_healthy }
+            africa:        { condition: service_healthy }
+            northamerica:  { condition: service_healthy }
+            southamerica:  { condition: service_healthy }
+            antarctica:    { condition: service_healthy }
+            australia:     { condition: service_healthy }
         ports: 
-        - "8000-8002:80"
+        - "8000:8080"
 
 volumes:
     mssql-global:
@@ -115,5 +111,6 @@ volumes:
     mssql-southamerica:
     mssql-antarctica:
     mssql-australia:
+    mssql-profanity:
     
     

@@ -8,7 +8,7 @@ namespace ArticleService.Infrastructure
         private readonly IConfiguration _configuration = configuration;
 
         public string GetConnectionStringForGlobal() =>
-            _configuration.GetConnectionString("GlobalDatabase") 
+            _configuration.GetConnectionString("Global") 
             ?? throw new InvalidOperationException("Global database connection string is not configured.");
 
         public string GetConnectionStringForContinent(Continent continent)

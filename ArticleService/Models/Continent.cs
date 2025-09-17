@@ -7,7 +7,7 @@
         Asia,
         Europe,
         NorthAmerica,
-        Oceania,
+        Australia,
         SouthAmerica
     }
 }

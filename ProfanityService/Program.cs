@@ -22,6 +22,27 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ProfanityDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
+
+    var attempts = 0;
+    while (true)
+    {
+        try
+        {
+            await db.Database.MigrateAsync();
+            break;
+        }
+        catch (Exception ex) when (attempts++ < 8)
+        {
+            logger.LogWarning(ex, "Profanity DB migrate attempt {Attempt} failed. Retrying...", attempts);
+            await Task.Delay(TimeSpan.FromSeconds(Math.Min(30, Math.Pow(2, attempts))));
+        }
+    }
+}
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
