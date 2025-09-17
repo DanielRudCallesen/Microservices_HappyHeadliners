@@ -19,7 +19,7 @@ namespace CommentService.Services
 
         public string Sanitize(string content)
         {
-            var rx = _regex ?? = BuildRegex();
+            var rx = _regex ??= BuildRegex();
             if (rx is null) return content;
             return rx.Replace(content, m => new string('*', m.Value.Length));
         }
