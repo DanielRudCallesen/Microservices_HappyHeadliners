@@ -1465,6 +1465,22 @@
           }
         }
       },
+      "OpenTelemetry.Exporter.OpenTelemetryProtocol/1.12.0": {
+        "type": "package",
+        "dependencies": {
+          "OpenTelemetry": "1.12.0"
+        },
+        "compile": {
+          "lib/net8.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll": {
+            "related": ".dll-keyless.pem;.dll-keyless.sig;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll": {
+            "related": ".dll-keyless.pem;.dll-keyless.sig;.xml"
+          }
+        }
+      },
       "OpenTelemetry.Extensions.Hosting/1.12.0": {
         "type": "package",
         "dependencies": {
@@ -1515,6 +1531,24 @@
         },
         "runtime": {
           "lib/net8.0/OpenTelemetry.Instrumentation.Http.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "OpenTelemetry.Instrumentation.SqlClient/1.12.0-beta.2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.Options": "9.0.0",
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.12.0, 2.0.0)"
+        },
+        "compile": {
+          "lib/net8.0/OpenTelemetry.Instrumentation.SqlClient.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/OpenTelemetry.Instrumentation.SqlClient.dll": {
             "related": ".xml"
           }
         }
@@ -1707,7 +1741,7 @@
           }
         }
       },
-      "Serilog.Sinks.Console/6.0.0": {
+      "Serilog.Sinks.Console/6.0.1-dev-00953": {
         "type": "package",
         "dependencies": {
           "Serilog": "4.0.0"
@@ -5301,6 +5335,41 @@
         "opentelemetry.api.providerbuilderextensions.nuspec"
       ]
     },
+    "OpenTelemetry.Exporter.OpenTelemetryProtocol/1.12.0": {
+      "sha512": "7LzQSPhz5pNaL4xZgT3wkZODA1NLrEq3bet8KDHgtaJ9q+VNP7wmiZky8gQfMkB4FXuI/pevT8ZurL4p5997WA==",
+      "type": "package",
+      "path": "opentelemetry.exporter.opentelemetryprotocol/1.12.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "README.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net462/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll",
+        "lib/net462/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll-keyless.pem",
+        "lib/net462/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll-keyless.sig",
+        "lib/net462/OpenTelemetry.Exporter.OpenTelemetryProtocol.xml",
+        "lib/net8.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll",
+        "lib/net8.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll-keyless.pem",
+        "lib/net8.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll-keyless.sig",
+        "lib/net8.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.xml",
+        "lib/net9.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll",
+        "lib/net9.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll-keyless.pem",
+        "lib/net9.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll-keyless.sig",
+        "lib/net9.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.xml",
+        "lib/netstandard2.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll",
+        "lib/netstandard2.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll-keyless.pem",
+        "lib/netstandard2.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll-keyless.sig",
+        "lib/netstandard2.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.xml",
+        "lib/netstandard2.1/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll",
+        "lib/netstandard2.1/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll-keyless.pem",
+        "lib/netstandard2.1/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll-keyless.sig",
+        "lib/netstandard2.1/OpenTelemetry.Exporter.OpenTelemetryProtocol.xml",
+        "opentelemetry-icon-color.png",
+        "opentelemetry.exporter.opentelemetryprotocol.1.12.0.nupkg.sha512",
+        "opentelemetry.exporter.opentelemetryprotocol.nuspec"
+      ]
+    },
     "OpenTelemetry.Extensions.Hosting/1.12.0": {
       "sha512": "6/8O6rsJRwslg5/Fm3bscBelw4Yh9T9CN24p7cAsuEFkrmmeSO9gkYUCK02Qi+CmPM2KHYTLjKi0lJaCsDMWQA==",
       "type": "package",
@@ -5366,6 +5435,26 @@
         "opentelemetry-icon-color.png",
         "opentelemetry.instrumentation.http.1.12.0.nupkg.sha512",
         "opentelemetry.instrumentation.http.nuspec"
+      ]
+    },
+    "OpenTelemetry.Instrumentation.SqlClient/1.12.0-beta.2": {
+      "sha512": "EGlwhAP+ZccCnd83hzUUqJT6qJK8E3hoRGJYNrB+YSV+7NvSjr+JAk6RoIgbZux06DL+0bbx4HRgX2osiVdLbQ==",
+      "type": "package",
+      "path": "opentelemetry.instrumentation.sqlclient/1.12.0-beta.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "README.md",
+        "lib/net462/OpenTelemetry.Instrumentation.SqlClient.dll",
+        "lib/net462/OpenTelemetry.Instrumentation.SqlClient.xml",
+        "lib/net8.0/OpenTelemetry.Instrumentation.SqlClient.dll",
+        "lib/net8.0/OpenTelemetry.Instrumentation.SqlClient.xml",
+        "lib/netstandard2.0/OpenTelemetry.Instrumentation.SqlClient.dll",
+        "lib/netstandard2.0/OpenTelemetry.Instrumentation.SqlClient.xml",
+        "opentelemetry-icon-color.png",
+        "opentelemetry.instrumentation.sqlclient.1.12.0-beta.2.nupkg.sha512",
+        "opentelemetry.instrumentation.sqlclient.nuspec"
       ]
     },
     "Polly.Core/8.4.2": {
@@ -5632,10 +5721,10 @@
         "serilog.settings.configuration.nuspec"
       ]
     },
-    "Serilog.Sinks.Console/6.0.0": {
-      "sha512": "fQGWqVMClCP2yEyTXPIinSr5c+CBGUvBybPxjAGcf7ctDhadFhrQw03Mv8rJ07/wR5PDfFjewf2LimvXCDzpbA==",
+    "Serilog.Sinks.Console/6.0.1-dev-00953": {
+      "sha512": "Goi2B0Je0X0NvWYUi0SiU9MJNF2957Kfjmc6VPZ2hNl6Lmj9he6laxmDuQU/c0fBdAFnNiEUPPcHd/NJVyfbkA==",
       "type": "package",
-      "path": "serilog.sinks.console/6.0.0",
+      "path": "serilog.sinks.console/6.0.1-dev-00953",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -5651,7 +5740,7 @@
         "lib/net8.0/Serilog.Sinks.Console.xml",
         "lib/netstandard2.0/Serilog.Sinks.Console.dll",
         "lib/netstandard2.0/Serilog.Sinks.Console.xml",
-        "serilog.sinks.console.6.0.0.nupkg.sha512",
+        "serilog.sinks.console.6.0.1-dev-00953.nupkg.sha512",
         "serilog.sinks.console.nuspec"
       ]
     },
@@ -7053,14 +7142,17 @@
       "Microsoft.Extensions.Http.Resilience >= 9.9.0",
       "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.22.1",
       "OpenTelemetry >= 1.12.0",
+      "OpenTelemetry.Exporter.OpenTelemetryProtocol >= 1.12.0",
       "OpenTelemetry.Extensions.Hosting >= 1.12.0",
       "OpenTelemetry.Instrumentation.AspNetCore >= 1.12.0",
       "OpenTelemetry.Instrumentation.Http >= 1.12.0",
+      "OpenTelemetry.Instrumentation.SqlClient >= 1.12.0-beta.2",
       "Serilog >= 4.3.0",
       "Serilog.AspNetCore >= 9.0.0",
       "Serilog.Enrichers.Environment >= 3.0.1",
       "Serilog.Enrichers.Process >= 3.0.0",
       "Serilog.Formatting.Compact >= 3.0.0",
+      "Serilog.Sinks.Console >= 6.0.1-dev-00953",
       "Serilog.Sinks.Seq >= 9.0.0",
       "Swashbuckle.AspNetCore >= 6.6.2"
     ]
@@ -7147,6 +7239,10 @@
             "target": "Package",
             "version": "[1.12.0, )"
           },
+          "OpenTelemetry.Exporter.OpenTelemetryProtocol": {
+            "target": "Package",
+            "version": "[1.12.0, )"
+          },
           "OpenTelemetry.Extensions.Hosting": {
             "target": "Package",
             "version": "[1.12.0, )"
@@ -7158,6 +7254,10 @@
           "OpenTelemetry.Instrumentation.Http": {
             "target": "Package",
             "version": "[1.12.0, )"
+          },
+          "OpenTelemetry.Instrumentation.SqlClient": {
+            "target": "Package",
+            "version": "[1.12.0-beta.2, )"
           },
           "Serilog": {
             "target": "Package",
@@ -7178,6 +7278,10 @@
           "Serilog.Formatting.Compact": {
             "target": "Package",
             "version": "[3.0.0, )"
+          },
+          "Serilog.Sinks.Console": {
+            "target": "Package",
+            "version": "[6.0.1-dev-00953, )"
           },
           "Serilog.Sinks.Seq": {
             "target": "Package",

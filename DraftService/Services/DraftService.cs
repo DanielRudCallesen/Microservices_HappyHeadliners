@@ -12,28 +12,28 @@ namespace DraftService.Services
     {
         private readonly DraftDbContext _db = db;
         private readonly ILogger<DraftService> _logger = logger;
-        private static readonly ActivitySource activitySource = new("DraftService");
+        private static readonly ActivitySource ActivitySource = new("DraftService");
 
-        public async Task<DraftReadDto> SaveSnapShotAsync(DraftSnapshotRequest request, CancellationToken ct)
+        public async Task<DraftReadDto> SaveSnapshotAsync(DraftSnapshotRequest request, CancellationToken ct)
         {
-            using var activity = activitySource.StartActivity("SaveSnapShotAsync", ActivityKind.Internal);
+            using var activity = ActivitySource.StartActivity("SaveSnapshotAsync", ActivityKind.Internal);
             activity?.SetTag("article.id", request.ArticleId);
 
             var hash = ComputeHash(request.Content);
-            var lastest = await _db.Drafts.Where(d => d.ArticleId == request.ArticleId)
+            var latest = await _db.Drafts.Where(d => d.ArticleId == request.ArticleId)
                 .OrderByDescending(d => d.Version).FirstOrDefaultAsync(ct);
 
-            if (lastest is not null & lastest.ContentHash == hash)
+            if (latest is not null && latest.ContentHash == hash)
             {
-                _logger.LogInformation("Skipping draft snapshot (Unchanged) articleId={ArticleId} Version={Version}", request.ArticleId, lastest.Version );
+                _logger.LogInformation("Skipping draft snapshot (Unchanged) articleId={ArticleId} Version={Version}", request.ArticleId, latest.Version );
                 activity?.SetTag("draft.skipped", true);
-                return Map(lastest);
+                return Map(latest);
             }
 
-            var nextVersion = (lastest?.Version ?? 0) + 1;
+            var nextVersion = (latest?.Version ?? 0) + 1;
             var entity = new Draft
             {
-                ArticleId = request.ArticleId;
+                ArticleId = request.ArticleId,
                 Title = request.Title,
                 Content = request.Content,
                 Version = nextVersion,

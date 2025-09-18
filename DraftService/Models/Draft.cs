@@ -12,6 +12,6 @@ namespace DraftService.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
         public string? Continent { get; set; }
-        public string ContentHash { get; set; }
+        [Required]public string ContentHash { get; set; } = string.Empty;
     }
 }

@@ -15,7 +15,7 @@ namespace DraftService.Controllers
         [HttpPost("snapshot")]
         public async Task<IActionResult> Snapshot([FromBody] DraftSnapshotRequest request, CancellationToken ct)
         {
-            var saved = await _service.SaveSnapShotAsync(request, ct);
+            var saved = await _service.SaveSnapshotAsync(request, ct);
             return CreatedAtAction(nameof(Get), new { id = saved.Id }, saved);
         }
 

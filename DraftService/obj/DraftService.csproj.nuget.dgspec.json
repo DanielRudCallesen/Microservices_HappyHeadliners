@@ -82,6 +82,10 @@
               "target": "Package",
               "version": "[1.12.0, )"
             },
+            "OpenTelemetry.Exporter.OpenTelemetryProtocol": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            },
             "OpenTelemetry.Extensions.Hosting": {
               "target": "Package",
               "version": "[1.12.0, )"
@@ -93,6 +97,10 @@
             "OpenTelemetry.Instrumentation.Http": {
               "target": "Package",
               "version": "[1.12.0, )"
+            },
+            "OpenTelemetry.Instrumentation.SqlClient": {
+              "target": "Package",
+              "version": "[1.12.0-beta.2, )"
             },
             "Serilog": {
               "target": "Package",
@@ -113,6 +121,10 @@
             "Serilog.Formatting.Compact": {
               "target": "Package",
               "version": "[3.0.0, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[6.0.1-dev-00953, )"
             },
             "Serilog.Sinks.Seq": {
               "target": "Package",
