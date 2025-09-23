@@ -67,6 +67,12 @@ services:
         volumes:
         - mssql-comment:/var/opt/mssql
 
+    draftdatabase:
+        <<: *mssql-base
+        container_name: draftdatabase
+        volumes:
+        - mssql-draft:/var/opt/mssql
+
     profanityservice:
         build:
             context: .
@@ -104,14 +110,14 @@ services:
         environment:
             ASPNETCORE_URLS: "http://+:8080"
             ASPNETCORE_ENVIRONMENT: "Development"
-            ConnectionStrings__Articles__Global: Server=global,1433;Database=Articles_Global;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
-            ConnectionStrings__Articles__Africa: Server=africa,1433;Database=Articles_Africa;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
-            ConnectionStrings__Articles__Antarctica: Server=antarctica,1433;Database=Articles_Antarctica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
-            ConnectionStrings__Articles__Asia: Server=asia,1433;Database=Articles_Asia;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
-            ConnectionStrings__Articles__Europe: Server=europe,1433;Database=Articles_Europe;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
-            ConnectionStrings__Articles__NorthAmerica: Server=northamerica,1433;Database=Articles_NorthAmerica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
-            ConnectionStrings__Articles__Australia: Server=australia,1433;Database=Articles_Australia;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
-            ConnectionStrings__Articles__SouthAmerica: Server=southamerica,1433;Database=Articles_SouthAmerica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true
+            ConnectionStrings__Articles__Global: "Server=global,1433;Database=Articles_Global;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
+            ConnectionStrings__Articles__Africa: "Server=africa,1433;Database=Articles_Africa;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
+            ConnectionStrings__Articles__Antarctica: "Server=antarctica,1433;Database=Articles_Antarctica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
+            ConnectionStrings__Articles__Asia: "Server=asia,1433;Database=Articles_Asia;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
+            ConnectionStrings__Articles__Europe: "Server=europe,1433;Database=Articles_Europe;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
+            ConnectionStrings__Articles__NorthAmerica: "Server=northamerica,1433;Database=Articles_NorthAmerica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
+            ConnectionStrings__Articles__Australia: "Server=australia,1433;Database=Articles_Australia;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
+            ConnectionStrings__Articles__SouthAmerica: "Server=southamerica,1433;Database=Articles_SouthAmerica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
         depends_on:
             global:        { condition: service_healthy }
             europe:        { condition: service_healthy }
@@ -123,22 +129,42 @@ services:
             australia:     { condition: service_healthy }
         ports: 
         - "8000:8080"
+    
+    draftservice:
+        build:
+            context: .
+            dockerfile: DraftService/Dockerfile
+        environment:
+            ASPNETCORE_URLS: "http://+:8080"
+            ASPNETCORE_ENVIRONMENT: "Development"
+            ConnectionStrings__DraftDatabase: "Server=draftdatabase,1433;Database=DraftDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
+            OpenTelemetry__ServiceName: "DraftService"
+            OpenTelemetry__OtlpEndpoint: "http://otel-collector:4317"
+        depends_on:
+            draftdatabase: { condition: service_healthy }
+            otel-collector:
+                condition: service_started
+            seq:
+                condition: service_started
+        ports:
+        - "8008:8080"
     seq:
         image: datalust/seq:latest
         restart: unless-stopped
         environment:
             ACCEPT_EULA: "Y"
-            SEQ_RENTIONPOLICY__DAYSKEPT: "14"
-            SEQ_RENTIONPOLICY__DISKSPACEALLOWED: "5GB"
+            SEQ_FIRSTRUN_NOAUTHENTICATION: "true"
+            SEQ_RETENTIONPOLICY__DAYSKEPT: "14"
+            SEQ_RETENTIONPOLICY__DISKSPACEALLOWED: "5GB"
         ports:
         - "5341:80"
         volumes:
         - seq-data:/data
     otel-collector:
         image: otel/opentelemetry-collector:latest
-        command: ["--config=/etc/otel-collector-config.yaml"]
+        command: ["--config", "/etc/otel-collector-config.yaml"]
         volumes:
-        - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+        - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
         ports:
           - "4317:4317" # OTLP gRPC
           - "4318:4318" # OTLP HTTP
@@ -155,5 +181,6 @@ volumes:
     mssql-profanity:
     mssql-comment:
     seq-data:
+    mssql-draft:
     
     
