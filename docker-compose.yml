@@ -80,6 +80,8 @@ services:
         environment:
             ASPNETCORE_URLS: "http://+:8080"
             ASPNETCORE_ENVIRONMENT: "Development"
+            OpenTelemetry__ServiceName: "ProfanityService"
+            OpenTelemetry__OtlpEndpoint: "http://otel-collector:4317"
             ConnectionStrings__ProfanityDatabase: "Server=profanitydatabase,1433;Database=ProfanityDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
         ports:
         - "8004:8080"
@@ -97,6 +99,8 @@ services:
         environment:
             ASPNETCORE_URLS: "http://+:8080"
             ASPNETCORE_ENVIRONMENT: "Development"
+            OpenTelemetry__ServiceName: "CommentService"
+            OpenTelemetry__OtlpEndpoint: "http://otel-collector:4317"
             ConnectionStrings__CommentDatabase: "Server=commentdatabase,1433;Database=CommentDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             profanityservice__BaseUrl: "http://profanityservice:8080"
         depends_on:
@@ -118,6 +122,8 @@ services:
         environment:
             ASPNETCORE_URLS: "http://+:8080"
             ASPNETCORE_ENVIRONMENT: "Development"
+            OpenTelemetry__ServiceName: "ArticleService"
+            OpenTelemetry__OtlpEndpoint: "http://otel-collector:4317"
             ConnectionStrings__Articles__Global: "Server=global,1433;Database=Articles_Global;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             ConnectionStrings__Articles__Africa: "Server=africa,1433;Database=Articles_Africa;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             ConnectionStrings__Articles__Antarctica: "Server=antarctica,1433;Database=Articles_Antarctica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"

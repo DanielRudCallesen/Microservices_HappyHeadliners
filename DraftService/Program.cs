@@ -1,17 +1,10 @@
-using System.Diagnostics;
 using DraftService.Data;
 using DraftService.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using OpenTelemetry;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
-using Serilog;
-using Serilog.Context;
 using Shared.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 // Shared.Observability
 builder.AddObservability("DraftService");
 

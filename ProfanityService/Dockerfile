@@ -12,6 +12,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["Shared.Observability/Shared.Observability.csproj", "Shared.Observability/"]
 COPY ["ProfanityService/ProfanityService.csproj", "ProfanityService/"]
 RUN dotnet restore "./ProfanityService/ProfanityService.csproj"
 COPY . .

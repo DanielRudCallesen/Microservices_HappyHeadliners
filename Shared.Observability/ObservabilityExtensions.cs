@@ -20,14 +20,20 @@ namespace Shared.Observability;
             var enabled = builder.Configuration.GetValue("Observability:Enabled", true);
             if (!enabled) return;
 
-            // Read configuration from appsettings.json, but never throws for fallback to console if config is invalid or missing
-            bool serilogReady = false;
+            // Allowing config/env to override the passed service name
+            var configuredName = builder.Configuration["Observability:ServiceName"];
+            if (!string.IsNullOrWhiteSpace(configuredName))
+            {
+                serviceName = configuredName!;
+            }
+
+        // Read configuration from appsettings.json, but never throws for fallback to console if config is invalid or missing
             try
             {
                 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).WriteTo
                     .Console(new RenderedCompactJsonFormatter()).CreateLogger();
                 builder.Host.UseSerilog();
-                serilogReady = true;
+                
             }
             catch
             {
@@ -43,12 +49,11 @@ namespace Shared.Observability;
                 var otlp = builder.Configuration["OpenTelemetry:OtlpEndpoint"] ?? "http://otel-collector:4317";
                 var endpointOk = Uri.TryCreate(otlp, UriKind.Absolute, out var endpointUri);
 
-                var services = builder.Services.AddOpenTelemetry().ConfigureResource(r => r.AddService(serviceName)
-                        .AddAttributes(
-                            new[]
+                builder.Services.AddOpenTelemetry().ConfigureResource(r => r.AddService(serviceName)
+                        .AddAttributes(new[]
                             {
                                 new KeyValuePair<string, object>("deployment.environment",
-                                    "builder.Environment.EnvironmentName")
+                                    builder.Environment.EnvironmentName)
                             }))
                     .WithTracing(tp =>
                     {
