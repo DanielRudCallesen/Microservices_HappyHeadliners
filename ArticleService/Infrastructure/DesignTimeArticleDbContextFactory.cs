@@ -14,7 +14,7 @@ namespace ArticleService.Infrastructure
                 .AddEnvironmentVariables()
                 .Build();
 
-            // Use the GLOBAL connection (any shard would do for schema creation)
+            
             var cs = config.GetConnectionString("GlobalDatabase")
                      ?? throw new InvalidOperationException("GlobalDatabase connection string missing for design-time.");
 
