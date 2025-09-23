@@ -61,7 +61,7 @@ using (var scope = app.Services.CreateScope())
         }
         catch (Exception ex) when (attempts++ < 10)
         {
-            logger.LogWarning(ex, "Comment Database migrate attempt {Attempt} failed. Retrying...", attempts);
+            logger.LogWarning(ex, "Comment Database migrate attempt {attempts} failed. Retrying...", attempts);
             await Task.Delay(TimeSpan.FromSeconds(Math.Min(30, Math.Pow(2, attempts))));
         }
     }

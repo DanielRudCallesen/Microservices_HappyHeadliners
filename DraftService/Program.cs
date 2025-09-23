@@ -7,14 +7,13 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Context;
+using Shared.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Serilog ocnfiguration
-Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
-
-builder.Host.UseSerilog();
+// Shared.Observability
+builder.AddObservability("DraftService");
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -25,31 +24,6 @@ builder.Services.AddDbContext<DraftDbContext>(o =>
         options => options.EnableRetryOnFailure()));
 
 builder.Services.AddScoped<IDraftService, DraftService.Services.DraftService>();
-
-
-// OpenTelemetry Tracing
-
-var serviceName = builder.Configuration["OpenTelemetry:ServiceName"] ?? "DraftService";
-var otlpEndpoint = builder.Configuration["OpenTelemetry:OtlpEndpoint"] ?? "http://otel-collector:4317";
-var environment = builder.Environment.EnvironmentName;
-
-builder.Services.AddOpenTelemetry().ConfigureResource(r => r.AddService(serviceName).AddAttributes(new[]
-{
-    new KeyValuePair<string, object>("deployment.environment", environment)
-})).WithTracing(tp => tp.AddSource(serviceName)
-    .AddAspNetCoreInstrumentation(o => o.RecordException = true)
-    .AddHttpClientInstrumentation()
-    .AddSqlClientInstrumentation(o =>
-    {
-        o.SetDbStatementForText = true; // For future references. REMOVE if risk of sensitive data
-        o.RecordException = true;
-    })
-    .SetSampler(new ParentBasedSampler(new TraceIdRatioBasedSampler(1.0)))
-    .AddOtlpExporter(o =>
-    {
-        o.Endpoint = new Uri(otlpEndpoint);
-    }));
-
 
 
 var app = builder.Build();
@@ -81,22 +55,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Enrich Serilog logs with Trace & Span Ids
-app.Use(async (ctx, next) =>
-{
-    var act = Activity.Current;
-    using (LogContext.PushProperty("TraceId", act?.TraceId.ToString() ?? string.Empty))
-    using (LogContext.PushProperty("SpanId", act?.SpanId.ToString() ?? string.Empty))
-    {
-        await next();
-    }
-});
-
-app.UseSerilogRequestLogging(opts =>
-{
-    opts.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
-});
-
+// Shared.Observability
+app.UseObservabilityRequestEnrichment();
 
 app.UseAuthorization();
 

@@ -85,6 +85,10 @@ services:
         - "8004:8080"
         depends_on:
             profanitydatabase: { condition: service_healthy }
+            otel-collector:
+                condition: service_started
+            seq:
+                condition: service_started
 
     commentservice:
         build:
@@ -96,8 +100,12 @@ services:
             ConnectionStrings__CommentDatabase: "Server=commentdatabase,1433;Database=CommentDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             profanityservice__BaseUrl: "http://profanityservice:8080"
         depends_on:
-            - profanityservice
-            - commentdatabase
+            profanityservice : { condition: service_healthy }
+            commentdatabase : { condition: service_healthy }
+            otel-collector:
+                condition: service_started
+            seq:
+                condition: service_started
         ports:
         - "8006:8080"
     
@@ -127,6 +135,10 @@ services:
             southamerica:  { condition: service_healthy }
             antarctica:    { condition: service_healthy }
             australia:     { condition: service_healthy }
+            otel-collector:
+                condition: service_started
+            seq:
+                condition: service_started
         ports: 
         - "8000:8080"
     
