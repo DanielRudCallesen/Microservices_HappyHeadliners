@@ -11,8 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Runtime;
 
-namespace Shared.Observability
-{
+namespace Shared.Observability;
+
     public static class ObservabilityExtensions
     {
         public static void AddObservability(this WebApplicationBuilder builder, string serviceName)
@@ -102,4 +102,4 @@ namespace Shared.Observability
             }
         }
     }
-}
+

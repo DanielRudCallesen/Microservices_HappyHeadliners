@@ -2,8 +2,12 @@ using ArticleService.Data;
 using ArticleService.Infrastructure.Interface;
 using ArticleService.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Shared.Observability
+builder.AddObservability("ArticleService");
 
 // Add services to the container.
 
@@ -33,6 +37,8 @@ if (!inContainer)
 }
 
 app.UseAuthorization();
+// Shared.Observability
+app.UseObservabilityRequestEnrichment();
 
 app.MapControllers();
 

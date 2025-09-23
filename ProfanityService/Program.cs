@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using ProfanityService.Data;
+using Shared.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Shared.Observability
+builder.AddObservability("ProfanityService");
+
 // Add services to the container.
-
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -46,6 +48,9 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// Shared.Observability
+app.UseObservabilityRequestEnrichment();
 
 app.MapControllers();
 

@@ -3,10 +3,14 @@ using CommentService.Interface;
 using CommentService.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Http.Resilience;
+using Shared.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Shared.Observability
+builder.AddObservability("CommentService");
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -72,6 +76,8 @@ if (!inContainer)
 
 
 app.UseAuthorization();
+// Shared.Observability
+app.UseObservabilityRequestEnrichment();
 
 app.MapControllers();
 
