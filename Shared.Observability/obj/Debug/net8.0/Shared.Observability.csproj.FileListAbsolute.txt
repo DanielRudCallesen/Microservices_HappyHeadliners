@@ -1,0 +1,13 @@
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\bin\Debug\net8.0\Shared.Observability.deps.json
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\bin\Debug\net8.0\Shared.Observability.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\bin\Debug\net8.0\Shared.Observability.pdb
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\obj\Debug\net8.0\Shared.Observability.csproj.AssemblyReference.cache
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\obj\Debug\net8.0\Shared.Observability.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\obj\Debug\net8.0\Shared.Observability.AssemblyInfoInputs.cache
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\obj\Debug\net8.0\Shared.Observability.AssemblyInfo.cs
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\obj\Debug\net8.0\Shared.Observability.csproj.CoreCompileInputs.cache
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\obj\Debug\net8.0\Shared.Observability.sourcelink.json
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\obj\Debug\net8.0\Shared.Observability.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\obj\Debug\net8.0\refint\Shared.Observability.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\obj\Debug\net8.0\Shared.Observability.pdb
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Observability\obj\Debug\net8.0\ref\Shared.Observability.dll

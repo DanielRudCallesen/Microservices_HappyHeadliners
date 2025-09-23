@@ -2500,6 +2500,26 @@
             "rid": "win"
           }
         }
+      },
+      "Shared.Observability/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "OpenTelemetry.Exporter.OpenTelemetryProtocol": "1.12.0",
+          "OpenTelemetry.Extensions.Hosting": "1.12.0",
+          "OpenTelemetry.Instrumentation.AspNetCore": "1.12.0",
+          "OpenTelemetry.Instrumentation.Http": "1.12.0",
+          "OpenTelemetry.Instrumentation.SqlClient": "1.12.0-beta.2",
+          "Serilog.AspNetCore": "9.0.0",
+          "Serilog.Formatting.Compact": "3.0.0",
+          "Serilog.Sinks.Seq": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Shared.Observability.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Shared.Observability.dll": {}
+        }
       }
     }
   },
@@ -7131,6 +7151,11 @@
         "system.windows.extensions.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "Shared.Observability/1.0.0": {
+      "type": "project",
+      "path": "../Shared.Observability/Shared.Observability.csproj",
+      "msbuildProject": "../Shared.Observability/Shared.Observability.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -7154,6 +7179,7 @@
       "Serilog.Formatting.Compact >= 3.0.0",
       "Serilog.Sinks.Console >= 6.0.1-dev-00953",
       "Serilog.Sinks.Seq >= 9.0.0",
+      "Shared.Observability >= 1.0.0",
       "Swashbuckle.AspNetCore >= 6.6.2"
     ]
   },
@@ -7188,7 +7214,11 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Danie\\source\\repos\\Development_Of_Large_Systems_Projects\\Shared.Observability\\Shared.Observability.csproj": {
+              "projectPath": "C:\\Users\\Danie\\source\\repos\\Development_Of_Large_Systems_Projects\\Shared.Observability\\Shared.Observability.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
