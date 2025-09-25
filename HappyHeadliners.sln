@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftService", "DraftServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Observability", "Shared.Observability\Shared.Observability.csproj", "{6D9B99D3-0A48-441C-951B-F86589C0E39B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Messaging", "Shared.Messaging\Shared.Messaging.csproj", "{66E76FE4-904B-4C28-9B00-89E32187277B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +90,18 @@ Global
 		{6D9B99D3-0A48-441C-951B-F86589C0E39B}.Release|x64.Build.0 = Release|Any CPU
 		{6D9B99D3-0A48-441C-951B-F86589C0E39B}.Release|x86.ActiveCfg = Release|Any CPU
 		{6D9B99D3-0A48-441C-951B-F86589C0E39B}.Release|x86.Build.0 = Release|Any CPU
+		{66E76FE4-904B-4C28-9B00-89E32187277B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66E76FE4-904B-4C28-9B00-89E32187277B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66E76FE4-904B-4C28-9B00-89E32187277B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{66E76FE4-904B-4C28-9B00-89E32187277B}.Debug|x64.Build.0 = Debug|Any CPU
+		{66E76FE4-904B-4C28-9B00-89E32187277B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{66E76FE4-904B-4C28-9B00-89E32187277B}.Debug|x86.Build.0 = Debug|Any CPU
+		{66E76FE4-904B-4C28-9B00-89E32187277B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66E76FE4-904B-4C28-9B00-89E32187277B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66E76FE4-904B-4C28-9B00-89E32187277B}.Release|x64.ActiveCfg = Release|Any CPU
+		{66E76FE4-904B-4C28-9B00-89E32187277B}.Release|x64.Build.0 = Release|Any CPU
+		{66E76FE4-904B-4C28-9B00-89E32187277B}.Release|x86.ActiveCfg = Release|Any CPU
+		{66E76FE4-904B-4C28-9B00-89E32187277B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
