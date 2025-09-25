@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Observability", "Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Messaging", "Shared.Messaging\Shared.Messaging.csproj", "{66E76FE4-904B-4C28-9B00-89E32187277B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MqSmoke", "MqSmoke\MqSmoke.csproj", "{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -102,6 +104,18 @@ Global
 		{66E76FE4-904B-4C28-9B00-89E32187277B}.Release|x64.Build.0 = Release|Any CPU
 		{66E76FE4-904B-4C28-9B00-89E32187277B}.Release|x86.ActiveCfg = Release|Any CPU
 		{66E76FE4-904B-4C28-9B00-89E32187277B}.Release|x86.Build.0 = Release|Any CPU
+		{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}.Debug|x64.Build.0 = Debug|Any CPU
+		{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}.Debug|x86.Build.0 = Debug|Any CPU
+		{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}.Release|x64.ActiveCfg = Release|Any CPU
+		{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}.Release|x64.Build.0 = Release|Any CPU
+		{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}.Release|x86.ActiveCfg = Release|Any CPU
+		{7B279DA8-BD0D-4DC7-A5A4-C1B006A74C93}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

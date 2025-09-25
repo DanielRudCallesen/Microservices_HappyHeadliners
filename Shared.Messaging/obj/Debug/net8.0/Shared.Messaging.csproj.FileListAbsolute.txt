@@ -1,0 +1,13 @@
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\bin\Debug\net8.0\Shared.Messaging.deps.json
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\bin\Debug\net8.0\Shared.Messaging.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\bin\Debug\net8.0\Shared.Messaging.pdb
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\obj\Debug\net8.0\Shared.Messaging.csproj.AssemblyReference.cache
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\obj\Debug\net8.0\Shared.Messaging.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\obj\Debug\net8.0\Shared.Messaging.AssemblyInfoInputs.cache
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\obj\Debug\net8.0\Shared.Messaging.AssemblyInfo.cs
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\obj\Debug\net8.0\Shared.Messaging.csproj.CoreCompileInputs.cache
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\obj\Debug\net8.0\Shared.Messaging.sourcelink.json
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\obj\Debug\net8.0\Shared.Messaging.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\obj\Debug\net8.0\refint\Shared.Messaging.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\obj\Debug\net8.0\Shared.Messaging.pdb
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\Shared.Messaging\obj\Debug\net8.0\ref\Shared.Messaging.dll

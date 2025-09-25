@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MqSmoke": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

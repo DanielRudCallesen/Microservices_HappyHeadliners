@@ -76,6 +76,7 @@ namespace Shared.Messaging.ArticleQueue
                 };
                 _connection = await _factory.CreateConnectionAsync("article-queue", cancellationToken: ct)
                     .ConfigureAwait(false);
+                _logger.LogInformation("RabbitMQ connection opened to {Host}:{Port} as {User}", _host, _port, _user);
                 return _connection;
             }
             // Release the thread
@@ -102,7 +103,16 @@ namespace Shared.Messaging.ArticleQueue
                 // To recreate if broker closes the channel, maybe remove?
                 ch.ChannelShutdownAsync += (_, __) =>
                 {
+                    _logger.LogWarning("Publisher channel was closed by broker; it will be recreated on next publish.");
                     _pubChannel = null;
+                    return Task.CompletedTask;
+                };
+
+                ch.BasicReturnAsync += (_, args) =>
+                {
+                    _logger.LogError(
+                        "Unroutable message returned. Exchange={Exchange} RoutingKey={Key} ReplyCode={Code} ReplyText={Text}",
+                        args.Exchange, args.RoutingKey, args.ReplyCode, args.ReplyText);
                     return Task.CompletedTask;
                 };
 
@@ -110,6 +120,7 @@ namespace Shared.Messaging.ArticleQueue
                     autoDelete: false, cancellationToken: ct).ConfigureAwait(false);
 
                 _pubChannel = ch;
+                _logger.LogInformation("Publisher channel created on exchange {Exchange}", _exchange);
                 return ch;
             }
 
@@ -132,7 +143,7 @@ namespace Shared.Messaging.ArticleQueue
                     ContentType = "application/json",
                     DeliveryMode = DeliveryModes.Persistent,
                     Headers = new Dictionary<string, object?>(),
-                    Timestamp = new AmqpTimestamp(DateTimeOffset.UtcNow.Second)
+                    Timestamp = new AmqpTimestamp(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
                 };
 
                 var ctx = new PropagationContext(Activity.Current?.Context ?? default, Baggage.Current);
@@ -142,12 +153,15 @@ namespace Shared.Messaging.ArticleQueue
                     p.Headers[key] = Encoding.UTF8.GetBytes(value);
                 });
 
-                await ch.BasicPublishAsync(exchange: _exchange, routingKey: "", mandatory: false,
+                await ch.BasicPublishAsync(exchange: _exchange, routingKey: "", mandatory: true,
                     basicProperties: props, body: body, cancellationToken: ct).ConfigureAwait(false);
+                _logger.LogInformation("Published {Bytes} bytes to exchange {Exchange}", body.Length, _exchange);
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Publish failed. Message may be lost");
+                _logger.LogError(ex,
+                    "Publish failed. Host={Host} Port={Port} User={User} Exchange={Exchange}",
+                    _host, _port, _user, _exchange);
             }
         }
 
@@ -217,9 +231,10 @@ namespace Shared.Messaging.ArticleQueue
                             .ConfigureAwait(false);
                     }
                 };
-                await ch.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer, cancellationToken: ct)
+                var consumerTag = await ch.BasicConsumeAsync(queue: queueName, autoAck: false, consumer: consumer, cancellationToken: ct)
                     .ConfigureAwait(false);
 
+                _logger.LogInformation("Subscribed {Subscriber}. Queue={Queue} ConsumerTag={Tag}", subscriberName, queueName, consumerTag);
                 // Keep subscription alive
                 while (!ct.IsCancellationRequested) await Task.Delay(1000, ct).ConfigureAwait(false);
 
