@@ -25,7 +25,8 @@ var cfg = new ConfigurationBuilder()
         ["RabbitMQ:User"] = "guest",
         ["RabbitMQ:Password"] = "guest",
         ["RabbitMQ:Exchange"] = "article.published",
-        ["RabbitMQ:PrefetchCount"] = "10"
+        ["RabbitMQ:PrefetchCount"] = "10",
+        ["RabbitMQ:QueueName"] = "mqsmoke.test"
     })
     .Build();
 
@@ -53,7 +54,7 @@ catch (Exception ex)
 
 // Separate tokens: one for subscriber lifetime, one for publishing
 using var subCts = new CancellationTokenSource(TimeSpan.FromMinutes(2));  // keep consumer alive
-using var pubCts = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // timeout only the publish
+
 
 var received = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -69,16 +70,19 @@ _ = Task.Run(async () =>
 });
 
 // 2) Publish a test message
-await Task.Delay(10000); // small delay to let subscription start
-await queue.PublishAsync(new PublishedArticle
+await Task.Delay(1500); // small delay to let subscription start
+using (var pubCts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
 {
-    Id = 42,
-    Title = "Smoke Test",
-    Content = "Hello RabbitMQ + OTel",
-    Author = "Tester",
-    Continent = "Global",
-    PublishedAt = DateTimeOffset.UtcNow
-}, subCts.Token);
+    await queue.PublishAsync(new PublishedArticle
+    {
+        Id = 42,
+        Title = "Test Article",
+        Content = "This is a test article.",
+        Author = "TestAuthor",
+        Continent = "Global",
+        PublishedAt = DateTimeOffset.UtcNow
+    }, pubCts.Token);
+}
 
 // 3) Wait for receipt or timeout
 if (await Task.WhenAny(received.Task, Task.Delay(TimeSpan.FromSeconds(8))) == received.Task)

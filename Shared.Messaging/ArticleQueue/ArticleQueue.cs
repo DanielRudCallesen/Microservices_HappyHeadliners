@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
@@ -22,6 +21,8 @@ namespace Shared.Messaging.ArticleQueue
     {
         private readonly ILogger<RabbitMqArticleQueue> _logger = logger;
 
+        private readonly IConfiguration _config = config;
+
         private readonly string _host = config["RabbitMQ:Host"] ?? "rabbitmq";
         private readonly int _port = int.TryParse(config["RabbitMQ:Port"], out var p) ? p : 5672;
         private readonly string _user = config["RabbitMQ:User"] ?? "guest";
@@ -29,7 +30,7 @@ namespace Shared.Messaging.ArticleQueue
         private readonly string _exchange = config["RabbitMQ:Exchange"] ?? "article.published";
 
         private readonly ushort _consumerDispatchConcurrency =
-            ushort.TryParse(config["RabbitMQ:ConsumerDispatchConcurrency"], out var c) ? c : (ushort)0;
+            ushort.TryParse(config["RabbitMQ:ConsumerDispatchConcurrency"], out var c) ? c : (ushort)1;
 
         private readonly ushort _prefetch =
             ushort.TryParse(config["RabbitMQ:PrefetchCount"], out var pf) ? pf : (ushort)10;
@@ -72,6 +73,7 @@ namespace Shared.Messaging.ArticleQueue
                     Port = _port,
                     UserName = _user,
                     Password = _pass,
+                    VirtualHost = "/",
                     ConsumerDispatchConcurrency = _consumerDispatchConcurrency
                 };
                 _connection = await _factory.CreateConnectionAsync("article-queue", cancellationToken: ct)
@@ -179,20 +181,34 @@ namespace Shared.Messaging.ArticleQueue
                     durable: true,
                     autoDelete: false,
                     cancellationToken: ct).ConfigureAwait(false);
-
-                var qok = await ch.QueueDeclareAsync(
-                    queue: "",
-                    durable: false,
-                    exclusive: true,
-                    autoDelete: true,
-                    arguments: null,
-                    cancellationToken: ct).ConfigureAwait(false);
-
-                var queueName = qok.QueueName;
-
+                var configuredQueue = _config["RabbitMQ:QueueName"];
+                string queueName;
+                if (!string.IsNullOrWhiteSpace(configuredQueue))
+                {
+                    var qokNamed = await ch.QueueDeclareAsync(
+                        queue: configuredQueue,
+                        durable: false,
+                        exclusive: false,
+                        autoDelete: false,
+                        arguments: null,
+                        cancellationToken: ct).ConfigureAwait(false);
+                    queueName = qokNamed.QueueName;
+                }
+                else
+                {
+                    var qok = await ch.QueueDeclareAsync(
+                        queue: "",
+                        durable: false,
+                        exclusive: true,
+                        autoDelete: true,
+                        arguments: null,
+                        cancellationToken: ct).ConfigureAwait(false);
+                        queueName = qok.QueueName;
+                }
+    
                 await ch.QueueBindAsync(queue: queueName, exchange: _exchange, routingKey: "", cancellationToken: ct)
                     .ConfigureAwait(false);
-
+                _logger.LogInformation("Bound queue {Queue} -> exchange {Exchange}", queueName, _exchange);
                 await ch.BasicQosAsync(prefetchSize: 0, prefetchCount: _prefetch, global: false, cancellationToken: ct)
                     .ConfigureAwait(false);
 
