@@ -34,6 +34,9 @@ namespace Shared.Messaging.ArticleQueue
 
         private readonly ushort _prefetch =
             ushort.TryParse(config["RabbitMQ:PrefetchCount"], out var pf) ? pf : (ushort)10;
+        
+        private readonly bool _namedQueueDurable =
+            bool.TryParse(config["RabbitMQ:QueueDurable"], out var qd) ? qd : true;
 
         private ConnectionFactory? _factory;
         private IConnection? _connection;
@@ -43,10 +46,13 @@ namespace Shared.Messaging.ArticleQueue
         private readonly SemaphoreSlim _connLock = new(1, 1);
         private readonly SemaphoreSlim _pubLock = new(1, 1);
 
+        // Serilaize publishes over the shared channel. Channels are not thread safe)
+        private readonly SemaphoreSlim _pubSendLock = new(1, 1);
+
         private static readonly JsonSerializerOptions JsonOptions =
             new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
-        // I don't know about this
+        // Propagate tracing context (W3C tracecontext + baggage)
         private static readonly TextMapPropagator Propgator = new CompositeTextMapPropagator(new TextMapPropagator[]
         {
             new TraceContextPropagator(),
@@ -74,6 +80,7 @@ namespace Shared.Messaging.ArticleQueue
                     UserName = _user,
                     Password = _pass,
                     VirtualHost = "/",
+                    
                     ConsumerDispatchConcurrency = _consumerDispatchConcurrency
                 };
                 _connection = await _factory.CreateConnectionAsync("article-queue", cancellationToken: ct)
@@ -102,7 +109,7 @@ namespace Shared.Messaging.ArticleQueue
                 var conn = await EnsureConnection(ct).ConfigureAwait(false);
                 var ch = await conn.CreateChannelAsync(cancellationToken: ct).ConfigureAwait(false);
 
-                // To recreate if broker closes the channel, maybe remove?
+                // To recreate if broker closes the channel
                 ch.ChannelShutdownAsync += (_, __) =>
                 {
                     _logger.LogWarning("Publisher channel was closed by broker; it will be recreated on next publish.");
@@ -155,8 +162,17 @@ namespace Shared.Messaging.ArticleQueue
                     p.Headers[key] = Encoding.UTF8.GetBytes(value);
                 });
 
-                await ch.BasicPublishAsync(exchange: _exchange, routingKey: "", mandatory: true,
-                    basicProperties: props, body: body, cancellationToken: ct).ConfigureAwait(false);
+                await _pubSendLock.WaitAsync(ct).ConfigureAwait(false);
+                try
+                {
+                    await ch.BasicPublishAsync(exchange: _exchange, routingKey: "", mandatory: true,
+                        basicProperties: props, body: body, cancellationToken: ct).ConfigureAwait(false);
+                }
+                finally
+                {
+                    _pubSendLock.Release();
+                }
+                
                 _logger.LogInformation("Published {Bytes} bytes to exchange {Exchange}", body.Length, _exchange);
             }
             catch (Exception ex)
@@ -181,13 +197,14 @@ namespace Shared.Messaging.ArticleQueue
                     durable: true,
                     autoDelete: false,
                     cancellationToken: ct).ConfigureAwait(false);
+
                 var configuredQueue = _config["RabbitMQ:QueueName"];
                 string queueName;
                 if (!string.IsNullOrWhiteSpace(configuredQueue))
                 {
                     var qokNamed = await ch.QueueDeclareAsync(
                         queue: configuredQueue,
-                        durable: false,
+                        durable: _namedQueueDurable,
                         exclusive: false,
                         autoDelete: false,
                         arguments: null,
@@ -209,6 +226,7 @@ namespace Shared.Messaging.ArticleQueue
                 await ch.QueueBindAsync(queue: queueName, exchange: _exchange, routingKey: "", cancellationToken: ct)
                     .ConfigureAwait(false);
                 _logger.LogInformation("Bound queue {Queue} -> exchange {Exchange}", queueName, _exchange);
+                
                 await ch.BasicQosAsync(prefetchSize: 0, prefetchCount: _prefetch, global: false, cancellationToken: ct)
                     .ConfigureAwait(false);
 
@@ -235,7 +253,7 @@ namespace Shared.Messaging.ArticleQueue
                     try
                     {
                         var msg = JsonSerializer.Deserialize<PublishedArticle>(ea.Body.Span, JsonOptions) ??
-                                  throw new InvalidOperationException("Invalid ArticleQueue.");
+                                  throw new InvalidOperationException("Invalid payload.");
                         await handler(msg, parent, ct).ConfigureAwait(false);
                         await ch.BasicAckAsync(ea.DeliveryTag, multiple: false, cancellationToken: ct)
                             .ConfigureAwait(false);
@@ -254,12 +272,13 @@ namespace Shared.Messaging.ArticleQueue
                 // Keep subscription alive
                 while (!ct.IsCancellationRequested) await Task.Delay(1000, ct).ConfigureAwait(false);
 
-                await ch.CloseAsync(cancellationToken: ct).ConfigureAwait(false);
+                // Using a non-cancelled token to close cleany
+                await ch.CloseAsync(cancellationToken: CancellationToken.None).ConfigureAwait(false);
                 ch.Dispose();
             }
             catch (OperationCanceledException)
             {
-
+                // Shutdown?
             }
             catch (Exception ex)
             {
@@ -287,6 +306,7 @@ namespace Shared.Messaging.ArticleQueue
 
             _connLock.Dispose();
             _pubLock.Dispose();
+            _pubSendLock.Dispose();
         }
     }
 }
