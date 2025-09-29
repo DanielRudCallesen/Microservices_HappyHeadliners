@@ -42,15 +42,16 @@
         private async Task RunOnce(CancellationToken ct)
         {
             var client = _clientFactory.CreateClient("ArticleService");
+            var url = "Articles?page=1&pageSize=50&includeGlobal=true";
 
-            var respone = await client.GetAsync("api/articles?page=1&pageSize=50&includeGlobal=true", ct);
-            if (!respone.IsSuccessStatusCode)
+            var response = await client.GetAsync(url, ct);
+            if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("ArticleService query failed");
                 return;
             }
 
-            var body = await respone.Content.ReadAsStringAsync(ct);
+            var body = await response.Content.ReadAsStringAsync(ct);
             // Add parse and assemble email. Placeholder log for the moment
             _logger.LogInformation("Daily digest acquired {Length} chars (EMAIL IMPLEMENTATION MISSING)", body.Length);
         }
