@@ -1,0 +1,58 @@
+﻿namespace NewsletterService.Services
+{
+    internal sealed class DailyNewsletterWorker : BackgroundService
+    {
+        private readonly IHttpClientFactory _clientFactory;
+        private readonly ILogger<DailyNewsletterWorker> _logger;
+        private readonly IConfiguration _config;
+
+        public DailyNewsletterWorker(IHttpClientFactory clientFactory, ILogger<DailyNewsletterWorker> logger, IConfiguration config)
+        {
+            _clientFactory = clientFactory;
+            _logger = logger;
+            _config = config;
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            var interval = GetInterval();
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                try
+                {
+                    await RunOnce(stoppingToken);
+                }
+                catch (OperationCanceledException)
+                {
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Daily newsletter failed");
+                }
+
+                await Task.Delay(interval, stoppingToken);
+                interval = GetInterval();
+            }
+        }
+
+        private TimeSpan GetInterval() => TimeSpan.TryParse(_config["Newsletter:DailyInterval"], out var ts) && ts > TimeSpan.Zero
+            ? ts
+            : TimeSpan.FromHours(24);
+
+        private async Task RunOnce(CancellationToken ct)
+        {
+            var client = _clientFactory.CreateClient("ArticleService");
+
+            var respone = await client.GetAsync("api/articles?page=1&pageSize=50&includeGlobal=true", ct);
+            if (!respone.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("ArticleService query failed");
+                return;
+            }
+
+            var body = await respone.Content.ReadAsStringAsync(ct);
+            // Add parse and assemble email. Placeholder log for the moment
+            _logger.LogInformation("Daily digest acquired {Length} chars (EMAIL IMPLEMENTATION MISSING)", body.Length);
+        }
+    }
+}
