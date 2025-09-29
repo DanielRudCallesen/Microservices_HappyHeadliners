@@ -32,5 +32,7 @@ namespace ArticleService.Data
             _context.Articles.Remove(article);
             await _context.SaveChangesAsync(cancellationToken);
         }
+
+        public Task<Article?> TryGetByCorrelationId(Guid correlationId, CancellationToken ct) => _context.Articles.FirstOrDefaultAsync(a => a.CorrelationId == correlationId, ct);
     }
 }

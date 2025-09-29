@@ -334,7 +334,6 @@ C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\obj\Debug\net8.0\ArticleS.AE1B7260.Up2Date
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\obj\Debug\net8.0\ArticleService.dll
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\obj\Debug\net8.0\refint\ArticleService.dll
@@ -368,3 +367,7 @@ C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\Serilog.Sinks.Seq.dll
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\Shared.Observability.dll
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\Shared.Observability.pdb
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\RabbitMQ.Client.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\Shared.Messaging.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\Shared.Messaging.pdb
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

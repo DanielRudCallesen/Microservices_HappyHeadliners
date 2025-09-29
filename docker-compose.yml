@@ -104,7 +104,7 @@ services:
             ConnectionStrings__CommentDatabase: "Server=commentdatabase,1433;Database=CommentDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             profanityservice__BaseUrl: "http://profanityservice:8080"
         depends_on:
-            profanityservice : { condition: service_healthy }
+            profanityservice : { condition: service_started }
             commentdatabase : { condition: service_healthy }
             otel-collector:
                 condition: service_started
@@ -124,6 +124,13 @@ services:
             ASPNETCORE_ENVIRONMENT: "Development"
             OpenTelemetry__ServiceName: "ArticleService"
             OpenTelemetry__OtlpEndpoint: "http://otel-collector:4317"
+            RabbitMQ__Host: "rabbitmq"
+            RabbitMQ__Port: "5672"
+            RabbitMQ__User: "guest"
+            RabbitMQ_Password: "guest"
+            RabbitMQ_Exchange: "article.published"
+            RabbitMQ__QueueName: "article-service.events"
+
             ConnectionStrings__Articles__Global: "Server=global,1433;Database=Articles_Global;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             ConnectionStrings__Articles__Africa: "Server=africa,1433;Database=Articles_Africa;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             ConnectionStrings__Articles__Antarctica: "Server=antarctica,1433;Database=Articles_Antarctica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
@@ -133,6 +140,7 @@ services:
             ConnectionStrings__Articles__Australia: "Server=australia,1433;Database=Articles_Australia;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             ConnectionStrings__Articles__SouthAmerica: "Server=southamerica,1433;Database=Articles_SouthAmerica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
         depends_on:
+            rabbitmq:      { condition: service_healthy }
             global:        { condition: service_healthy }
             europe:        { condition: service_healthy }
             asia:          { condition: service_healthy }
@@ -186,6 +194,20 @@ services:
         ports:
           - "4317:4317" # OTLP gRPC
           - "4318:4318" # OTLP HTTP
+
+    rabbitmq:
+        image: rabbitmq:3.13-management
+        ports:
+            - "5672:5672" # RabbitMQ main port
+            - "15672:15672" # RabbitMQ management UI
+        environment:
+            RABBITMQ_DEFAULT_USER: guest
+            RABBITMQ_DEFAULT_PASS: guest
+        healthcheck:
+            test: ["CMD", "rabbitmq-diagnostics", "ping"]
+            interval: 10s
+            timeout: 5s
+            retries: 12
 
 volumes:
     mssql-global:

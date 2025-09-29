@@ -12,6 +12,7 @@
           "Microsoft.EntityFrameworkCore.Design": "9.0.9",
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.9",
           "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": "1.22.1",
+          "Shared.Messaging": "1.0.0",
           "Shared.Observability": "1.0.0",
           "Swashbuckle.AspNetCore": "6.6.2"
         },
@@ -524,7 +525,7 @@
           }
         }
       },
-      "Microsoft.Extensions.Configuration/9.0.0": {
+      "Microsoft.Extensions.Configuration/9.0.9": {
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "9.0.9",
           "Microsoft.Extensions.Primitives": "9.0.9"
@@ -532,7 +533,7 @@
         "runtime": {
           "lib/net8.0/Microsoft.Extensions.Configuration.dll": {
             "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.24.52809"
+            "fileVersion": "9.0.925.41916"
           }
         }
       },
@@ -655,7 +656,7 @@
       },
       "Microsoft.Extensions.Logging.Configuration/9.0.0": {
         "dependencies": {
-          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.Configuration": "9.0.9",
           "Microsoft.Extensions.Configuration.Abstractions": "9.0.9",
           "Microsoft.Extensions.Configuration.Binder": "9.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.9",
@@ -918,7 +919,7 @@
       },
       "OpenTelemetry.Instrumentation.Http/1.12.0": {
         "dependencies": {
-          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.Configuration": "9.0.9",
           "Microsoft.Extensions.Options": "9.0.9",
           "OpenTelemetry.Api.ProviderBuilderExtensions": "1.12.0"
         },
@@ -931,7 +932,7 @@
       },
       "OpenTelemetry.Instrumentation.SqlClient/1.12.0-beta.2": {
         "dependencies": {
-          "Microsoft.Extensions.Configuration": "9.0.0",
+          "Microsoft.Extensions.Configuration": "9.0.9",
           "Microsoft.Extensions.Options": "9.0.9",
           "OpenTelemetry.Api.ProviderBuilderExtensions": "1.12.0"
         },
@@ -939,6 +940,18 @@
           "lib/net8.0/OpenTelemetry.Instrumentation.SqlClient.dll": {
             "assemblyVersion": "1.12.0.582",
             "fileVersion": "1.12.0.582"
+          }
+        }
+      },
+      "RabbitMQ.Client/7.1.2": {
+        "dependencies": {
+          "System.IO.Pipelines": "9.0.9",
+          "System.Threading.RateLimiting": "8.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/RabbitMQ.Client.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.1.2.0"
           }
         }
       },
@@ -1376,6 +1389,7 @@
         }
       },
       "System.Threading.Channels/7.0.0": {},
+      "System.Threading.RateLimiting/8.0.0": {},
       "System.Threading.Tasks.Extensions/4.5.4": {},
       "System.Windows.Extensions/6.0.0": {
         "dependencies": {
@@ -1393,6 +1407,23 @@
             "assetType": "runtime",
             "assemblyVersion": "6.0.0.0",
             "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "Shared.Messaging/1.0.0": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "9.0.9",
+          "Microsoft.Extensions.Configuration": "9.0.9",
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.9",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.9",
+          "OpenTelemetry": "1.12.0",
+          "OpenTelemetry.Api": "1.12.0",
+          "RabbitMQ.Client": "7.1.2"
+        },
+        "runtime": {
+          "Shared.Messaging.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -1590,12 +1621,12 @@
       "path": "microsoft.extensions.caching.memory/9.0.9",
       "hashPath": "microsoft.extensions.caching.memory.9.0.9.nupkg.sha512"
     },
-    "Microsoft.Extensions.Configuration/9.0.0": {
+    "Microsoft.Extensions.Configuration/9.0.9": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-YIMO9T3JL8MeEXgVozKt2v79hquo/EFtnY0vgxmLnUvk1Rei/halI7kOWZL2RBeV9FMGzgM9LZA8CVaNwFMaNA==",
-      "path": "microsoft.extensions.configuration/9.0.0",
-      "hashPath": "microsoft.extensions.configuration.9.0.0.nupkg.sha512"
+      "sha512": "sha512-w87wF/90/VI0ZQBhf4rbMEeyEy0vi2WKjFmACsNAKNaorY+ZlVz7ddyXkbADvaWouMKffNmR0yQOGcrvSSvKGg==",
+      "path": "microsoft.extensions.configuration/9.0.9",
+      "hashPath": "microsoft.extensions.configuration.9.0.9.nupkg.sha512"
     },
     "Microsoft.Extensions.Configuration.Abstractions/9.0.9": {
       "type": "package",
@@ -1855,6 +1886,13 @@
       "sha512": "sha512-EGlwhAP+ZccCnd83hzUUqJT6qJK8E3hoRGJYNrB+YSV+7NvSjr+JAk6RoIgbZux06DL+0bbx4HRgX2osiVdLbQ==",
       "path": "opentelemetry.instrumentation.sqlclient/1.12.0-beta.2",
       "hashPath": "opentelemetry.instrumentation.sqlclient.1.12.0-beta.2.nupkg.sha512"
+    },
+    "RabbitMQ.Client/7.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-y3c6ulgULScWthHw5PLM1ShHRLhxg0vCtzX/hh61gRgNecL3ZC3WoBW2HYHoXOVRqTl99Br9E7CZEytGZEsCyQ==",
+      "path": "rabbitmq.client/7.1.2",
+      "hashPath": "rabbitmq.client.7.1.2.nupkg.sha512"
     },
     "Serilog/4.2.0": {
       "type": "package",
@@ -2178,6 +2216,13 @@
       "path": "system.threading.channels/7.0.0",
       "hashPath": "system.threading.channels.7.0.0.nupkg.sha512"
     },
+    "System.Threading.RateLimiting/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7mu9v0QDv66ar3DpGSZHg9NuNcxDaaAcnMULuZlaTpP9+hwXhrxNGsF5GmLkSHxFdb5bBc1TzeujsRgTrPWi+Q==",
+      "path": "system.threading.ratelimiting/8.0.0",
+      "hashPath": "system.threading.ratelimiting.8.0.0.nupkg.sha512"
+    },
     "System.Threading.Tasks.Extensions/4.5.4": {
       "type": "package",
       "serviceable": true,
@@ -2191,6 +2236,11 @@
       "sha512": "sha512-IXoJOXIqc39AIe+CIR7koBtRGMiCt/LPM3lI+PELtDIy9XdyeSrwXFdWV9dzJ2Awl0paLWUaknLxFQ5HpHZUog==",
       "path": "system.windows.extensions/6.0.0",
       "hashPath": "system.windows.extensions.6.0.0.nupkg.sha512"
+    },
+    "Shared.Messaging/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "Shared.Observability/1.0.0": {
       "type": "project",

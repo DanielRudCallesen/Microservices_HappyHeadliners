@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "3FSHQorNETg=",
+  "dgSpecHash": "Le0KtWFAPPw=",
   "success": true,
   "projectFilePath": "C:\\Users\\Danie\\source\\repos\\Development_Of_Large_Systems_Projects\\ArticleService\\ArticleService.csproj",
   "expectedPackageFiles": [
@@ -28,7 +28,7 @@
     "C:\\Users\\Danie\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\9.0.9\\microsoft.extensions.caching.abstractions.9.0.9.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\microsoft.extensions.caching.memory\\9.0.9\\microsoft.extensions.caching.memory.9.0.9.nupkg.sha512",
-    "C:\\Users\\Danie\\.nuget\\packages\\microsoft.extensions.configuration\\9.0.0\\microsoft.extensions.configuration.9.0.0.nupkg.sha512",
+    "C:\\Users\\Danie\\.nuget\\packages\\microsoft.extensions.configuration\\9.0.9\\microsoft.extensions.configuration.9.0.9.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\9.0.9\\microsoft.extensions.configuration.abstractions.9.0.9.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\microsoft.extensions.configuration.binder\\9.0.0\\microsoft.extensions.configuration.binder.9.0.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\9.0.9\\microsoft.extensions.dependencyinjection.9.0.9.nupkg.sha512",
@@ -66,6 +66,7 @@
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.instrumentation.aspnetcore\\1.12.0\\opentelemetry.instrumentation.aspnetcore.1.12.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.instrumentation.http\\1.12.0\\opentelemetry.instrumentation.http.1.12.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.instrumentation.sqlclient\\1.12.0-beta.2\\opentelemetry.instrumentation.sqlclient.1.12.0-beta.2.nupkg.sha512",
+    "C:\\Users\\Danie\\.nuget\\packages\\rabbitmq.client\\7.1.2\\rabbitmq.client.7.1.2.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\serilog\\4.2.0\\serilog.4.2.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\serilog.aspnetcore\\9.0.0\\serilog.aspnetcore.9.0.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\serilog.extensions.hosting\\9.0.0\\serilog.extensions.hosting.9.0.0.nupkg.sha512",
@@ -112,6 +113,7 @@
     "C:\\Users\\Danie\\.nuget\\packages\\system.text.encodings.web\\9.0.9\\system.text.encodings.web.9.0.9.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\system.text.json\\9.0.9\\system.text.json.9.0.9.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512",
+    "C:\\Users\\Danie\\.nuget\\packages\\system.threading.ratelimiting\\8.0.0\\system.threading.ratelimiting.8.0.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512"
   ],

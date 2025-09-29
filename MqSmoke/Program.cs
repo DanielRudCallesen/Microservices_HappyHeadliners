@@ -75,7 +75,7 @@ using (var pubCts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
 {
     await queue.PublishAsync(new PublishedArticle
     {
-        Id = 42,
+        CorrelationId = Guid.NewGuid(),
         Title = "Test Article",
         Content = "This is a test article.",
         Author = "TestAuthor",

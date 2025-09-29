@@ -15,7 +15,7 @@ namespace ArticleService.Infrastructure
                 .Build();
 
             
-            var cs = config.GetConnectionString("GlobalDatabase")
+            var cs = config.GetConnectionString("Global")
                      ?? throw new InvalidOperationException("GlobalDatabase connection string missing for design-time.");
 
             var builder = new DbContextOptionsBuilder<ArticleDbContext>();

@@ -37,6 +37,9 @@ namespace ArticleService.Migrations
                     b.Property<int?>("Continent")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("CorrelationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("PublishedDate")
                         .HasColumnType("datetime2");
 
@@ -46,6 +49,9 @@ namespace ArticleService.Migrations
                         .HasColumnType("nvarchar(180)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CorrelationId")
+                        .IsUnique();
 
                     b.HasIndex("PublishedDate");
 

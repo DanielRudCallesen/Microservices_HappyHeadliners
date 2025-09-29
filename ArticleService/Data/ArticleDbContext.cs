@@ -12,6 +12,7 @@ namespace ArticleService.Data
             modelBuilder.Entity<Article>().Property(a => a.PublishedDate)
                 .HasConversion(d => d, d => DateTime.SpecifyKind(d, DateTimeKind.Utc));
             modelBuilder.Entity<Article>().HasIndex(a => a.PublishedDate);
+            modelBuilder.Entity<Article>().HasIndex(a => a.CorrelationId).IsUnique();
         }
     }
 }

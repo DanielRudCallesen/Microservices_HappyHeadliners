@@ -1,7 +1,9 @@
 using ArticleService.Data;
 using ArticleService.Infrastructure.Interface;
+using ArticleService.Messaging;
 using ArticleService.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.Messaging;
 using Shared.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,12 @@ builder.Services.AddSingleton<ArticleService.Infrastructure.Interface.IConnectio
 builder.Services.AddSingleton<ArticleService.Interfaces.IArticleRepositoryFactory, ArticleService.Data.ArticleRepositoryFactory>();
 builder.Services.AddScoped<ArticleService.Interfaces.IArticleService, ArticleService.Data.ArticleService>();
 
+
+// Messaging
+builder.Services.AddArticleQueue(builder.Configuration);
+builder.Services.AddHostedService<ArticleQueueSubscriber>();
+
+// Shard Migrator
 builder.Services.AddHostedService<ArticleService.Infrastructure.ShardMigratorHostedService>();
 var app = builder.Build();
 
