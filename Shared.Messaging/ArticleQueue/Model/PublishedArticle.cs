@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Shared.Messaging.ArticleQueue.Model
 {
+    // For article publish event I need to change the model a bit
+    // CorrelationId is required, used for idempotency and tracing continuity
     public sealed class PublishedArticle
     {
-        public required int Id { get; init; }
+        public required  Guid CorrelationId{ get; init; }
         public required string Title { get; init; }
         public required string Content { get; init; }
         public string? Author { get; init; } // Maybe remove? Got no Authentication yet

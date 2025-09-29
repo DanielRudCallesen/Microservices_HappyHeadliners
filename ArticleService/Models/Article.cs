@@ -13,5 +13,8 @@ namespace ArticleService.Models
         public DateTime PublishedDate { get; set; } = DateTime.UtcNow;
 
         public Continent? Continent { get; set; }
+
+        // For Idempotency when consuming queue evenets
+        public Guid CorrelationId { get; set; }
     }
 }
