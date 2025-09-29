@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Shared.Observability")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6efe77d85d5c0ccb1b0f862728f245c6d868044b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2451eaa389f4aea56330fbf211e61a72fbcad914")]
 [assembly: System.Reflection.AssemblyProductAttribute("Shared.Observability")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Shared.Observability")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
