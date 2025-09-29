@@ -5,52 +5,52 @@ using Shared.Messaging.ArticleQueue.Model;
 
 namespace ArticleService.Data
 {
-    public class ArticleService(IArticleRepositoryFactory factory, ILogger<ArticleService> logger, Shared.Messaging.ArticleQueue.Interface.IArticleQueue articleQueue) : IArticleService
+    public class ArticleService(IArticleRepositoryFactory factory, ILogger<ArticleService> logger) : IArticleService
     {
         private readonly IArticleRepositoryFactory _factory = factory;
         private readonly ILogger<ArticleService> _logger = logger;
-        private readonly Shared.Messaging.ArticleQueue.Interface.IArticleQueue _articleQueue = articleQueue;
+        //private readonly Shared.Messaging.ArticleQueue.Interface.IArticleQueue _articleQueue = articleQueue;
 
-        public async Task<ArticleReadDTO> CreateAsync(ArticleCreateDTO dto, CancellationToken ct)
-        {
-            var repository = dto.Continent is null ? _factory.CreateGlobal() : _factory.CreateForContinent(dto.Continent.Value);
+        // Removed CreateAsync - Added PersistFromEvent instead
+        //public async Task<ArticleReadDTO> CreateAsync(ArticleCreateDTO dto, CancellationToken ct)
+        //{
+        //    var repository = dto.Continent is null ? _factory.CreateGlobal() : _factory.CreateForContinent(dto.Continent.Value);
 
-            var correlationId = Guid.NewGuid();
-            var entity = new Article
-            {
-                Title = dto.Title,
-                Content = dto.Content,
-                Continent = dto.Continent,
-                PublishedDate = DateTime.UtcNow,
-                CorrelationId = correlationId
-            };
+        //    var correlationId = Guid.NewGuid();
+        //    var entity = new Article
+        //    {
+        //        Title = dto.Title,
+        //        Content = dto.Content,
+        //        Continent = dto.Continent,
+        //        PublishedDate = DateTime.UtcNow,
+        //        CorrelationId = correlationId
+        //    };
 
-            entity = await repository.AddAsync(entity, ct);
+        //    entity = await repository.AddAsync(entity, ct);
 
-            await _articleQueue.PublishAsync(new PublishedArticle
-            {
-                CorrelationId = correlationId,
-                Title = entity.Title,
-                Content = entity.Content,
-                Author = "Unknown", // map as needed
-                Continent = entity.Continent?.ToString() ?? "Global",
-                PublishedAt = DateTimeOffset.UtcNow
-            }, ct);
+        //    await _articleQueue.PublishAsync(new PublishedArticle
+        //    {
+        //        CorrelationId = correlationId,
+        //        Title = entity.Title,
+        //        Content = entity.Content,
+        //        Author = "Unknown", // map as needed
+        //        Continent = entity.Continent?.ToString() ?? "Global",
+        //        PublishedAt = DateTimeOffset.UtcNow
+        //    }, ct);
 
-            _logger.LogInformation("Created article {ArticleId} in {Continent} repository", entity.Id, dto.Continent?.ToString() ?? "Global");
+        //    _logger.LogInformation("Created article {ArticleId} in {Continent} repository", entity.Id, dto.Continent?.ToString() ?? "Global");
 
-            return Map(entity);
-        }
+        //    return Map(entity);
+        //}
 
-        public async Task<ArticleReadDTO> CreateFromEvent(Guid correlationId, string title, string content,
+        public async Task<ArticleReadDTO> PersistFromEventAsync(Guid correlationId, string title, string content,
             Continent? continent, CancellationToken ct)
         {
             var repo = continent is null ? _factory.CreateGlobal() : _factory.CreateForContinent(continent.Value);
 
-            if (repo is ArticleRepository ar && await ar.TryGetByCorrelationId(correlationId, ct) is {} existing)
+            if (repo is ArticleRepository ar && await ar.TryGetByCorrelationId(correlationId, ct) is { } existing)
             {
-                _logger.LogInformation("Event article already exists CorrelationId={CorrelationId} ArticleId={ArticleId}",
-                    correlationId, existing.Id);
+                _logger.LogInformation("Event article already exists CorrelationId={CorrelationId} ArticleId={ArticleId}", correlationId, existing.Id);
                 return Map(existing);
             }
 
@@ -72,13 +72,14 @@ namespace ArticleService.Data
             }
             catch (DbUpdateException ex)
             {
-                _logger.LogWarning(ex, "Race on CorrelationId={CorrelationId}, reloading", correlationId);
+                _logger.LogWarning(ex, "Race on CorrelationId={CorrelationId}, realoding", correlationId);
                 if (repo is ArticleRepository ar2 && await ar2.TryGetByCorrelationId(correlationId, ct) is { } raced)
                     return Map(raced);
                 throw;
             }
-
         }
+        
+        
         public async Task<ArticleReadDTO?> GetAsync(int id, Continent? continent, bool includeGlobalFallBack, CancellationToken ct)
         {
             if (continent is not null)

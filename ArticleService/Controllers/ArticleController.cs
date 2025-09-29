@@ -13,15 +13,7 @@ namespace ArticleService.Controllers
         private readonly IArticleService _service = service;
         private readonly ILogger<ArticleController> _logger = logger;
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ArticleCreateDTO dto, CancellationToken ct)
-        {
-            var created = await _service.CreateAsync(dto, ct);
-
-            return CreatedAtAction(nameof(GetById), new { id = created.id, continent = created.Continent?.ToString() },
-                created);
-        }
-
+        
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id, [FromQuery] Continent? continent,
             [FromQuery] bool includeGlobalFallback = true, CancellationToken ct = default)
