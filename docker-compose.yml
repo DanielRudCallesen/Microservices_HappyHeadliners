@@ -13,6 +13,22 @@ x-mssql-base: &mssql-base
         timeout: 5s
         retries: 30
 
+x-dotnet-common-env: &dotnet-common-env
+    ASPNETCORE_URLS: "http://+:8080"
+    ASPNETCORE_ENVIRONMENT: "Development"
+    OpenTelemetry__OtlpEndpoint: "http://otel-collector:4317"
+    Serilog__MinimumLevel: "Information"
+    Serilog__Override__Microsoft: "Warning"
+    Serilog__Override__System: "Warning"
+
+x-rabbitmq-common-env: &rabbitmq-common-env
+  RabbitMQ__Host: "rabbitmq"
+  RabbitMQ__Port: "5672"
+  RabbitMQ__User: "guest"
+  RabbitMQ__Password: "guest"
+  RabbitMQ__Exchange: "article.published"
+  RabbitMQ__QueueDurable: "true"
+  
 services:
     global:    
         <<: *mssql-base
@@ -78,10 +94,9 @@ services:
             context: .
             dockerfile: ProfanityService/Dockerfile
         environment:
-            ASPNETCORE_URLS: "http://+:8080"
-            ASPNETCORE_ENVIRONMENT: "Development"
+            <<: *dotnet-common-env
+            Serilog__Properties__Application: "ProfanityService"
             OpenTelemetry__ServiceName: "ProfanityService"
-            OpenTelemetry__OtlpEndpoint: "http://otel-collector:4317"
             ConnectionStrings__ProfanityDatabase: "Server=profanitydatabase,1433;Database=ProfanityDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
         ports:
         - "8004:8080"
@@ -97,10 +112,9 @@ services:
             context: .
             dockerfile: CommentService/Dockerfile
         environment:
-            ASPNETCORE_URLS: "http://+:8080"
-            ASPNETCORE_ENVIRONMENT: "Development"
+            <<: *dotnet-common-env
+            Serilog__Properties__Application: "CommentService"
             OpenTelemetry__ServiceName: "CommentService"
-            OpenTelemetry__OtlpEndpoint: "http://otel-collector:4317"
             ConnectionStrings__CommentDatabase: "Server=commentdatabase,1433;Database=CommentDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             profanityservice__BaseUrl: "http://profanityservice:8080"
         depends_on:
@@ -113,22 +127,55 @@ services:
         ports:
         - "8006:8080"
     
+    publisher-service:
+        build:
+            context: .
+            dockerfile: PublisherService/Dockerfile
+        environment:
+            <<: *dotnet-common-env
+            <<: *rabbitmq-common-env
+            Serilog__Properties__Application: "PublisherService"
+            OpenTelemetry__ServiceName: "PublisherService"
+            RabbitMQ__QueueName: "publisher-service.events"
+            RabbitMQ__EnsureQueueOnPublish : "true"
+        depends_on:
+            rabbitmq : { condition: service_healthy }
+            otel-collector: {condition: service_started }
+            seq: { condition: service_started }
+        ports:
+        - "8010:8080"
 
+    newsletter-service:
+        build:
+            context: .
+            dockerfile: NewsletterService/Dockerfile
+        environment:
+            <<: *dotnet-common-env
+            <<: *rabbitmq-common-env
+            Serilog__Properties__Application: "NewsletterService"
+            OpenTelemetry__ServiceName: "NewsletterService"
+            RabbitMQ__QueueName: "newsletter-service.events"
+            ArticleService__BaseUrl: "http://article-service:8080"
+            Newsletter__DailyInterval : "1.00:00:00"
+        depends_on:
+            rabbitmq : { condition: service_healthy }
+            article-service : { condition: service_started }
+            otel-collector:
+                condition: service_started
+            seq:
+                condition: service_started
+        ports:
+        - "8012:8080"
 
     article-service:
         build:
             context: .
             dockerfile: ArticleService/Dockerfile
         environment:
-            ASPNETCORE_URLS: "http://+:8080"
-            ASPNETCORE_ENVIRONMENT: "Development"
+            <<: *dotnet-common-env
+            <<: *rabbitmq-common-env
+            Serilog__Properties__Application: "ArticleService"
             OpenTelemetry__ServiceName: "ArticleService"
-            OpenTelemetry__OtlpEndpoint: "http://otel-collector:4317"
-            RabbitMQ__Host: "rabbitmq"
-            RabbitMQ__Port: "5672"
-            RabbitMQ__User: "guest"
-            RabbitMQ_Password: "guest"
-            RabbitMQ_Exchange: "article.published"
             RabbitMQ__QueueName: "article-service.events"
 
             ConnectionStrings__Articles__Global: "Server=global,1433;Database=Articles_Global;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
@@ -149,11 +196,9 @@ services:
             southamerica:  { condition: service_healthy }
             antarctica:    { condition: service_healthy }
             australia:     { condition: service_healthy }
-            otel-collector:
-                condition: service_started
-            seq:
-                condition: service_started
-        ports: 
+            otel-collector: { condition: service_started }
+            seq: { condition: service_started }
+        ports:
         - "8000:8080"
     
     draftservice:
@@ -186,6 +231,7 @@ services:
         - "5341:80"
         volumes:
         - seq-data:/data
+
     otel-collector:
         image: otel/opentelemetry-collector:latest
         command: ["--config", "/etc/otel-collector-config.yaml"]

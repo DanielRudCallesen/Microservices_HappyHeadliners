@@ -6,10 +6,8 @@ using Serilog;
 using Serilog.Context;
 using Serilog.Formatting.Compact;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Runtime;
 
 namespace Shared.Observability;
 
@@ -24,7 +22,7 @@ namespace Shared.Observability;
             var configuredName = builder.Configuration["Observability:ServiceName"];
             if (!string.IsNullOrWhiteSpace(configuredName))
             {
-                serviceName = configuredName!;
+                serviceName = configuredName;
             }
 
         // Read configuration from appsettings.json, but never throws for fallback to console if config is invalid or missing
@@ -85,7 +83,7 @@ namespace Shared.Observability;
         {
             try
             {
-                app.Use(async (ctx, next) =>
+                app.Use(async (_, next) =>
                 {
                     var act = Activity.Current;
                     using (LogContext.PushProperty("TraceId", act?.TraceId.ToString() ?? string.Empty))

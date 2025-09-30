@@ -1,17 +1,10 @@
 ﻿namespace NewsletterService.Services
 {
-    internal sealed class DailyNewsletterWorker : BackgroundService
+    internal sealed class DailyNewsletterWorker(IHttpClientFactory clientFactory, ILogger<DailyNewsletterWorker> logger, IConfiguration config) : BackgroundService
     {
-        private readonly IHttpClientFactory _clientFactory;
-        private readonly ILogger<DailyNewsletterWorker> _logger;
-        private readonly IConfiguration _config;
-
-        public DailyNewsletterWorker(IHttpClientFactory clientFactory, ILogger<DailyNewsletterWorker> logger, IConfiguration config)
-        {
-            _clientFactory = clientFactory;
-            _logger = logger;
-            _config = config;
-        }
+        private readonly IHttpClientFactory _clientFactory = clientFactory;
+        private readonly ILogger<DailyNewsletterWorker> _logger = logger;
+        private readonly IConfiguration _config = config;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
