@@ -28,14 +28,15 @@ namespace PublisherService.Controllers
             var correlationId = Guid.NewGuid();
             activtiy?.SetTag("article.correlation_id", correlationId);
             activtiy?.SetTag("article.title", request.Title);
+            var continent = string.IsNullOrWhiteSpace(request.Continent) ? "Global" : request.Continent.Trim();
 
             var evt = new PublishedArticle
             {
                 CorrelationId = correlationId,
                 Title = request.Title,
                 Content = request.Content,
-                Author = request.Author,
-                Continent = string.IsNullOrWhiteSpace(request.Continent) ? "Global" : request.Continent,
+                //Author = request.Author,
+                Continent = continent,
                 PublishedAt = DateTimeOffset.UtcNow
             };
 

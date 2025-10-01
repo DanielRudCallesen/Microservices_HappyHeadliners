@@ -18,16 +18,26 @@ namespace CommentService.Services
             if (string.IsNullOrWhiteSpace(dto.UserName)) throw new ArgumentException("UserName is required");
             if (string.IsNullOrWhiteSpace(dto.Content)) throw new ArgumentException("Content is required");
 
-            string contentToPersist;
+            string santizied;
+            bool hasProfanity;
+
+           
             try
             {
                 var result = await _profanity.FilterAsync(dto.Content, ct);
-                contentToPersist = result.SanitizedContent;
+                santizied = result.SanitizedContent;
+                hasProfanity = result.HasProfanity;
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "ProfanityService unavailable. Using local fallback.");
-                contentToPersist = _fallback.Sanitize(dto.Content);
+                santizied= _fallback.Sanitize(dto.Content);
+                hasProfanity = !string.Equals(dto.Content, santizied, StringComparison.Ordinal);
+            }
+
+            if (hasProfanity)
+            {
+                _logger.LogInformation("Profanity detected and santized for ArticleId={ArticleId}", dto.ArticleId);
             }
 
             var entity = new Comment
@@ -35,7 +45,7 @@ namespace CommentService.Services
                 ArticleId = dto.ArticleId,
                 UserId = dto.UserId,
                 UserName = dto.UserName,
-                Content = dto.Content,
+                Content = santizied,
                 CreatedAt = DateTime.UtcNow
             };
             _db.Comments.Add(entity);
