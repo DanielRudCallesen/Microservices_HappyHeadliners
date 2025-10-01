@@ -371,3 +371,5 @@ C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\Shared.Messaging.dll
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\Shared.Messaging.pdb
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\Serilog.Enrichers.Environment.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\Serilog.Enrichers.Process.dll

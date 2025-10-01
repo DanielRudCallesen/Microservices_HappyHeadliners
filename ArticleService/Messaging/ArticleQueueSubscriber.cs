@@ -12,7 +12,7 @@ namespace ArticleService.Messaging
         private readonly IArticleQueue _queue;
         private readonly IServiceScopeFactory _scopeFactorty;
         private readonly ILogger<ArticleQueueSubscriber> _logger;
-        private static readonly ActivitySource activitySource = new ("ArticleService.Messaging");
+        private static readonly ActivitySource ActivitySource = new ("ArticleService");
 
         public ArticleQueueSubscriber(IArticleQueue queue, IServiceScopeFactory scopeFactory,
             ILogger<ArticleQueueSubscriber> logger)
@@ -28,7 +28,7 @@ namespace ArticleService.Messaging
 
         private async Task HandleAsync(PublishedArticle evt, PropagationContext parent, CancellationToken ct)
         {
-            using var activity = activitySource.StartActivity("Consume PublishedArticle", ActivityKind.Consumer, parent.ActivityContext);
+            using var activity = ActivitySource.StartActivity("Consume PublishedArticle", ActivityKind.Consumer, parent.ActivityContext);
 
             activity?.SetTag("message.system", "rabbitmq");
             activity?.SetTag("message.destination", "article.published");

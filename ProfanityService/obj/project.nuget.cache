@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "MwPARbpbaC0=",
+  "dgSpecHash": "MexY7z/SFsI=",
   "success": true,
   "projectFilePath": "C:\\Users\\Danie\\source\\repos\\Development_Of_Large_Systems_Projects\\ProfanityService\\ProfanityService.csproj",
   "expectedPackageFiles": [
@@ -67,7 +67,7 @@
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.instrumentation.aspnetcore\\1.12.0\\opentelemetry.instrumentation.aspnetcore.1.12.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.instrumentation.http\\1.12.0\\opentelemetry.instrumentation.http.1.12.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.instrumentation.sqlclient\\1.12.0-beta.2\\opentelemetry.instrumentation.sqlclient.1.12.0-beta.2.nupkg.sha512",
-    "C:\\Users\\Danie\\.nuget\\packages\\serilog\\4.2.0\\serilog.4.2.0.nupkg.sha512",
+    "C:\\Users\\Danie\\.nuget\\packages\\serilog\\4.3.0\\serilog.4.3.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\serilog.aspnetcore\\9.0.0\\serilog.aspnetcore.9.0.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\serilog.extensions.hosting\\9.0.0\\serilog.extensions.hosting.9.0.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\serilog.extensions.logging\\9.0.0\\serilog.extensions.logging.9.0.0.nupkg.sha512",

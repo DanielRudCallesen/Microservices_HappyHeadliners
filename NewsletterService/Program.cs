@@ -1,23 +1,31 @@
+using NewsletterService.Messaging;
+using NewsletterService.Services;
+using Shared.Messaging;
 using Shared.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Observability
 builder.AddObservability("NewsletterService");
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Messaging 
+builder.Services.AddArticleQueue(builder.Configuration);
+
+// Immediate in-memory store
 builder.Services.AddSingleton<IImmediateArticleStore, InMemoryImmediateArticleStore>();
 
+// Subscriber hosted service
 builder.Services.AddHostedService<ArticleQueueSubscriber>();
 
+// HTTP client to ArticleService for daily digest
 builder.Services.AddHttpClient("ArticleService", (sp, client) =>
 {
     var cfg = sp.GetRequiredService<IConfiguration>();
-    var baseUrl = cfg["ArticleService:BaseUrl"] ?? "http://articleservice";
+    var baseUrl = cfg["ArticleService:BaseUrl"] ?? "http://article-service:8080";
     client.BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/");
 });
 

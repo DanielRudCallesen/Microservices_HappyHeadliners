@@ -12,7 +12,7 @@ namespace NewsletterService.Messaging
         private readonly IArticleQueue _queue;
         private readonly IImmediateArticleStore _store;
         private readonly ILogger<ArticleQueueSubscriber> _logger;
-        private static readonly ActivitySource ActivitySource = new("NewsletterService.Messaging");
+        private static readonly ActivitySource ActivitySource = new("NewsletterService");
 
         public ArticleQueueSubscriber(IArticleQueue queue, IImmediateArticleStore store,
             ILogger<ArticleQueueSubscriber> logger)

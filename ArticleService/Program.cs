@@ -27,8 +27,13 @@ builder.Services.AddScoped<ArticleService.Interfaces.IArticleService, ArticleSer
 builder.Services.AddArticleQueue(builder.Configuration);
 builder.Services.AddHostedService<ArticleQueueSubscriber>();
 
-// Shard Migrator
-builder.Services.AddHostedService<ArticleService.Infrastructure.ShardMigratorHostedService>();
+var runMigrations = builder.Configuration.GetValue("Migrations:RunOnStartup", true);
+if (runMigrations)
+{
+    // Shard Migrator
+    builder.Services.AddHostedService<ArticleService.Infrastructure.ShardMigratorHostedService>();
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

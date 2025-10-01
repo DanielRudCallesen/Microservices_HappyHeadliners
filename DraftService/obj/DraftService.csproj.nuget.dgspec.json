@@ -84,15 +84,15 @@
             },
             "OpenTelemetry": {
               "target": "Package",
-              "version": "[1.12.0, )"
+              "version": "[1.13.0, )"
             },
             "OpenTelemetry.Exporter.OpenTelemetryProtocol": {
               "target": "Package",
-              "version": "[1.12.0, )"
+              "version": "[1.13.0, )"
             },
             "OpenTelemetry.Extensions.Hosting": {
               "target": "Package",
-              "version": "[1.12.0, )"
+              "version": "[1.13.0, )"
             },
             "OpenTelemetry.Instrumentation.AspNetCore": {
               "target": "Package",

@@ -17,7 +17,7 @@ x-dotnet-common-env: &dotnet-common-env
     ASPNETCORE_URLS: "http://+:8080"
     ASPNETCORE_ENVIRONMENT: "Development"
     OpenTelemetry__OtlpEndpoint: "http://otel-collector:4317"
-    Serilog__MinimumLevel: "Information"
+    Serilog__MinimumLevel__Default: "Information"
     Serilog__Override__Microsoft: "Warning"
     Serilog__Override__System: "Warning"
 
@@ -35,41 +35,41 @@ services:
         container_name: global
         volumes:
         - mssql-global:/var/opt/mssql
-    europe:    
-        <<: *mssql-base
-        container_name: europe
-        volumes:
-        - mssql-europe:/var/opt/mssql
-    asia:    
-        <<: *mssql-base
-        container_name: asia
-        volumes:
-        - mssql-asia:/var/opt/mssql
-    africa:    
-        <<: *mssql-base
-        container_name: africa
-        volumes:
-        - mssql-africa:/var/opt/mssql
-    northamerica:    
-        <<: *mssql-base
-        container_name: northamerica
-        volumes:
-        - mssql-northamerica:/var/opt/mssql
-    southamerica:    
-        <<: *mssql-base
-        container_name: southamerica
-        volumes:
-        - mssql-southamerica:/var/opt/mssql
-    antarctica:    
-        <<: *mssql-base
-        container_name: antarctica
-        volumes:
-        - mssql-antarctica:/var/opt/mssql
-    australia:    
-        <<: *mssql-base
-        container_name: australia
-        volumes:
-        - mssql-australia:/var/opt/mssql
+    #europe:    
+        #<<: *mssql-base
+        #container_name: europe
+        #volumes:
+        #- mssql-europe:/var/opt/mssql
+    #asia:    
+        #<<: *mssql-base
+        #container_name: asia
+        #volumes:
+        #- mssql-asia:/var/opt/mssql
+    #africa:    
+        #<<: *mssql-base
+        #container_name: africa
+        #volumes:
+        #- mssql-africa:/var/opt/mssql
+    #northamerica:    
+        #<<: *mssql-base
+        #container_name: northamerica
+        #volumes:
+        #- mssql-northamerica:/var/opt/mssql
+    #southamerica:    
+        #<<: *mssql-base
+        #container_name: southamerica
+        #volumes:
+        #- mssql-southamerica:/var/opt/mssql
+    #antarctica:    
+        #<<: *mssql-base
+        #container_name: antarctica
+        #volumes:
+        #- mssql-antarctica:/var/opt/mssql
+    #australia:    
+        #<<: *mssql-base
+        #container_name: australia
+        #volumes:
+        #- mssql-australia:/var/opt/mssql
 
     profanitydatabase:
         <<: *mssql-base
@@ -97,6 +97,7 @@ services:
             <<: *dotnet-common-env
             Serilog__Properties__Application: "ProfanityService"
             OpenTelemetry__ServiceName: "ProfanityService"
+            Migrations__RunOnStartup: "false"
             ConnectionStrings__ProfanityDatabase: "Server=profanitydatabase,1433;Database=ProfanityDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
         ports:
         - "8004:8080"
@@ -115,6 +116,7 @@ services:
             <<: *dotnet-common-env
             Serilog__Properties__Application: "CommentService"
             OpenTelemetry__ServiceName: "CommentService"
+            Migrations__RunOnStartup: "false"
             ConnectionStrings__CommentDatabase: "Server=commentdatabase,1433;Database=CommentDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             profanityservice__BaseUrl: "http://profanityservice:8080"
         depends_on:
@@ -132,12 +134,9 @@ services:
             context: .
             dockerfile: PublisherService/Dockerfile
         environment:
-            <<: *dotnet-common-env
-            <<: *rabbitmq-common-env
+            <<: [*dotnet-common-env, *rabbitmq-common-env]
             Serilog__Properties__Application: "PublisherService"
             OpenTelemetry__ServiceName: "PublisherService"
-            RabbitMQ__QueueName: "publisher-service.events"
-            RabbitMQ__EnsureQueueOnPublish : "true"
         depends_on:
             rabbitmq : { condition: service_healthy }
             otel-collector: {condition: service_started }
@@ -150,8 +149,7 @@ services:
             context: .
             dockerfile: NewsletterService/Dockerfile
         environment:
-            <<: *dotnet-common-env
-            <<: *rabbitmq-common-env
+            <<: [*dotnet-common-env, *rabbitmq-common-env]
             Serilog__Properties__Application: "NewsletterService"
             OpenTelemetry__ServiceName: "NewsletterService"
             RabbitMQ__QueueName: "newsletter-service.events"
@@ -172,12 +170,11 @@ services:
             context: .
             dockerfile: ArticleService/Dockerfile
         environment:
-            <<: *dotnet-common-env
-            <<: *rabbitmq-common-env
+            <<: [*dotnet-common-env, *rabbitmq-common-env]
             Serilog__Properties__Application: "ArticleService"
             OpenTelemetry__ServiceName: "ArticleService"
             RabbitMQ__QueueName: "article-service.events"
-
+            Migrations__RunOnStartup: "false"
             ConnectionStrings__Articles__Global: "Server=global,1433;Database=Articles_Global;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             ConnectionStrings__Articles__Africa: "Server=africa,1433;Database=Articles_Africa;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             ConnectionStrings__Articles__Antarctica: "Server=antarctica,1433;Database=Articles_Antarctica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
@@ -189,13 +186,13 @@ services:
         depends_on:
             rabbitmq:      { condition: service_healthy }
             global:        { condition: service_healthy }
-            europe:        { condition: service_healthy }
-            asia:          { condition: service_healthy }
-            africa:        { condition: service_healthy }
-            northamerica:  { condition: service_healthy }
-            southamerica:  { condition: service_healthy }
-            antarctica:    { condition: service_healthy }
-            australia:     { condition: service_healthy }
+            #europe:        { condition: service_healthy }
+            #asia:          { condition: service_healthy }
+            #africa:        { condition: service_healthy }
+            #northamerica:  { condition: service_healthy }
+            #southamerica:  { condition: service_healthy }
+            #antarctica:    { condition: service_healthy }
+            #australia:     { condition: service_healthy }
             otel-collector: { condition: service_started }
             seq: { condition: service_started }
         ports:
@@ -208,6 +205,7 @@ services:
         environment:
             ASPNETCORE_URLS: "http://+:8080"
             ASPNETCORE_ENVIRONMENT: "Development"
+            Migrations__RunOnStartup: "false"
             ConnectionStrings__DraftDatabase: "Server=draftdatabase,1433;Database=DraftDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             OpenTelemetry__ServiceName: "DraftService"
             OpenTelemetry__OtlpEndpoint: "http://otel-collector:4317"
@@ -231,6 +229,13 @@ services:
         - "5341:80"
         volumes:
         - seq-data:/data
+    jaeger:
+        image: jaegertracing/all-in-one:latest
+        restart: unless-stopped
+        environment:
+            COLLECTOR_OTLP_ENABLED: "true"
+        ports:
+        - "16686:16686" # Jaeger UI
 
     otel-collector:
         image: otel/opentelemetry-collector:latest
@@ -240,6 +245,7 @@ services:
         ports:
           - "4317:4317" # OTLP gRPC
           - "4318:4318" # OTLP HTTP
+          - "14250:14250" # Jaeger gRPC
 
     rabbitmq:
         image: rabbitmq:3.13-management
