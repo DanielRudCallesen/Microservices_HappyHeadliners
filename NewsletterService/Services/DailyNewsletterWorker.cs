@@ -35,7 +35,7 @@
         private async Task RunOnce(CancellationToken ct)
         {
             var client = _clientFactory.CreateClient("ArticleService");
-            var url = "Articles?page=1&pageSize=50&includeGlobal=true";
+            var url = "Article?page=1&pageSize=50&includeGlobal=true";
 
             var response = await client.GetAsync(url, ct);
             if (!response.IsSuccessStatusCode)

@@ -10,7 +10,7 @@ namespace ArticleService.Interfaces
         Task<bool> UpdateAsync(int id, Continent? continent, ArticleUpdateDTO dto, CancellationToken cancellationToken);
         Task<bool> DeleteAsync(int id, Continent? continent, CancellationToken cancellationToken);
 
-        Task<ArticleReadDTO> PersistFromEventAsync(Guid correlationId, string title, string content, Continent? continent,
+        Task<ArticleReadDTO> PersistFromEventAsync(Guid correlationId, string title, string content, Continent? continent, DateTime publishedDate,
             CancellationToken cancellationToken);
     }
 }

@@ -49,7 +49,7 @@ namespace ArticleService.Messaging
                 var articleService = scope.ServiceProvider.GetRequiredService<IArticleService>();
 
                 var created =
-                    await articleService.PersistFromEventAsync(evt.CorrelationId, evt.Title, evt.Content, continent, ct);
+                    await articleService.PersistFromEventAsync(evt.CorrelationId, evt.Title, evt.Content, continent, evt.PublishedAt.UtcDateTime, ct);
                 activity?.SetTag("article.db_id", created.id);
                 _logger.LogInformation("Processed article event CorrelationId={CorrelationId} => ArticleId={ArticleId}", evt.CorrelationId, created.id);
             }

@@ -44,7 +44,7 @@ namespace ArticleService.Data
         //}
 
         public async Task<ArticleReadDTO> PersistFromEventAsync(Guid correlationId, string title, string content,
-            Continent? continent, CancellationToken ct)
+            Continent? continent, DateTime publishedDate, CancellationToken ct)
         {
             var repo = continent is null ? _factory.CreateGlobal() : _factory.CreateForContinent(continent.Value);
 
@@ -59,7 +59,7 @@ namespace ArticleService.Data
                 Title = title,
                 Content = content,
                 Continent = continent,
-                PublishedDate = DateTime.UtcNow,
+                PublishedDate = publishedDate,
                 CorrelationId = correlationId
             };
 
