@@ -236,6 +236,7 @@ services:
             COLLECTOR_OTLP_ENABLED: "true"
         ports:
         - "16686:16686" # Jaeger UI
+        - "14250:14250" # Jaeger gRPC collector endpoint (Used by OTEL-collector exporter)
 
     otel-collector:
         image: otel/opentelemetry-collector:latest
@@ -245,7 +246,6 @@ services:
         ports:
           - "4317:4317" # OTLP gRPC
           - "4318:4318" # OTLP HTTP
-          - "14250:14250" # Jaeger gRPC
 
     rabbitmq:
         image: rabbitmq:3.13-management
