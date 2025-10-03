@@ -1,3 +1,4 @@
+using CommentService.Clients;
 using CommentService.Data;
 using CommentService.Interface;
 using CommentService.Services;
@@ -30,6 +31,14 @@ builder.Services.AddHttpClient<IProfanityClient, ProfanityHttpClient>(client =>
 {
     client.BaseAddress = new Uri(baseUrl);
     client.Timeout = TimeSpan.FromSeconds(5);
+}).AddStandardResilienceHandler();
+
+// Article existence client
+var articleBaseUrl = builder.Configuration.GetValue<string>("ArticleService:BaseUrl") ?? "http://article-service:8080";
+builder.Services.AddHttpClient<IArticleExistenceClient, ArticleExistenceHttpClient>(client =>
+{
+    client.BaseAddress = new Uri(articleBaseUrl.TrimEnd('/') + "/");
+    client.Timeout = TimeSpan.FromSeconds(10);
 }).AddStandardResilienceHandler();
 
 // Background refresh for local dictionary
