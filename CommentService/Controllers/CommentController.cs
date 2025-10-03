@@ -15,8 +15,20 @@ namespace CommentService.Controllers
         public async Task<ActionResult<CommentDTO.CommentReadDto>> Create([FromBody] CommentDTO.CommentCreateDto dto,
             CancellationToken ct)
         {
-            var created = await _service.CreateAsync(dto, ct);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            try
+            {
+                var created = await _service.CreateAsync(dto, ct);
+                return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            }
+            catch (ArticleNotFoundException)
+            {
+                return NotFound($"Article {dto.ArticleId} not found");
+            }
+            catch (ArgumentException ex)
+            {
+                return ValidationProblem(ex.Message);
+            }
+            
         }
 
         [HttpGet("{id:int}")]
