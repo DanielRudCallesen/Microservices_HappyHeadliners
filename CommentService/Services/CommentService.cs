@@ -5,18 +5,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CommentService.Services
 {
-    public class CommentService(CommentDbContext db, IProfanityClient profanityClient, ILocalProfanityFilter fallback, ILogger<CommentService> logger) : ICommentService
+    public class CommentService(CommentDbContext db, IProfanityClient profanityClient, ILocalProfanityFilter fallback, ILogger<CommentService> logger, IArticleExistenceClient articleClient) : ICommentService
     {
         private readonly CommentDbContext _db = db;
         private readonly IProfanityClient _profanity = profanityClient;
         private readonly ILocalProfanityFilter _fallback = fallback;
         private readonly ILogger<CommentService> _logger = logger;
+        private readonly IArticleExistenceClient _articleClient = articleClient;
 
         public async Task<CommentDTO.CommentReadDto> CreateAsync(CommentDTO.CommentCreateDto dto, CancellationToken ct)
         {
+            if(dto.ArticleId <= 0) throw new ArgumentException("ArticleId must be greater than zero");
             if (string.IsNullOrWhiteSpace(dto.UserId)) throw new ArgumentException("UserId is required");
             if (string.IsNullOrWhiteSpace(dto.UserName)) throw new ArgumentException("UserName is required");
             if (string.IsNullOrWhiteSpace(dto.Content)) throw new ArgumentException("Content is required");
+
+
+            var exists = await _articleClient.Exists(dto.ArticleId, dto.Continent, ct);
+            if (!exists)
+            {
+                throw new ArticleNotFoundException(dto.ArticleId);
+            }
 
             string santizied;
             bool hasProfanity;
