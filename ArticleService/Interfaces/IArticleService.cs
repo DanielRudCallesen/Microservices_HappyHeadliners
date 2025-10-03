@@ -12,5 +12,6 @@ namespace ArticleService.Interfaces
 
         Task<ArticleReadDTO> PersistFromEventAsync(Guid correlationId, string title, string content, Continent? continent, DateTime publishedDate,
             CancellationToken cancellationToken);
+
     }
 }

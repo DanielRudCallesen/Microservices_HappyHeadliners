@@ -13,18 +13,14 @@ namespace CommentService.Clients
         public async Task<bool> Exists(int articleId, string? continent, CancellationToken ct)
         {
             var uri = continent is null
-                ? $"Article/{articleId}/exists"
-                : $"Article{articleId}/exists?continent={Uri.EscapeDataString(continent)}&includeGlobalFallBack=true";
+                ? $"Article/{articleId}"
+                : $"Article/{articleId}?continent={Uri.EscapeDataString(continent)}&includeGlobalFallBack=true";
 
-            var head = await _http.SendAsync(new HttpRequestMessage(HttpMethod.Head, uri), ct);
-            if (head.StatusCode == HttpStatusCode.OK) return true;
-            if (head.StatusCode == HttpStatusCode.NotFound) return false;
+            var resp = await _http.GetAsync(uri, ct);
+            if (resp.StatusCode == HttpStatusCode.OK) return true;
+            if (resp.StatusCode == HttpStatusCode.NotFound) return false;
 
-            var get = await _http.GetAsync(uri, ct);
-            if (get.StatusCode == HttpStatusCode.OK) return true;
-            if (get.StatusCode == HttpStatusCode.NotFound) return false;
-
-            _logger.LogInformation("Unexpected response validating article {ArticleId}: {StatusCode}.", articleId, get.StatusCode);
+            _logger.LogInformation("Unexpected response validating article {ArticleId}: {StatusCode}.", articleId, resp.StatusCode);
             return false;
         }
     }

@@ -43,6 +43,8 @@ namespace ArticleService.Data
         //    return Map(entity);
         //}
 
+        
+
         public async Task<ArticleReadDTO> PersistFromEventAsync(Guid correlationId, string title, string content,
             Continent? continent, DateTime publishedDate, CancellationToken ct)
         {
