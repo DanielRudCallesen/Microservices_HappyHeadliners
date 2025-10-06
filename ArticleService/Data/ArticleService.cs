@@ -1,14 +1,19 @@
-﻿using ArticleService.Interfaces;
+﻿using ArticleService.Caching;
+using ArticleService.Interfaces;
 using ArticleService.Models;
 using Microsoft.EntityFrameworkCore;
 using Shared.Messaging.ArticleQueue.Model;
 
 namespace ArticleService.Data
 {
-    public class ArticleService(IArticleRepositoryFactory factory, ILogger<ArticleService> logger) : IArticleService
+    public class ArticleService(IArticleRepositoryFactory factory, ILogger<ArticleService> logger, IArticleCache cache, IConfiguration config) : IArticleService
     {
         private readonly IArticleRepositoryFactory _factory = factory;
         private readonly ILogger<ArticleService> _logger = logger;
+
+        private readonly IArticleCache _cache = cache;
+
+        private readonly bool _cacheEnabled = config.GetValue("ArticleCache:Enabled", true);
         //private readonly Shared.Messaging.ArticleQueue.Interface.IArticleQueue _articleQueue = articleQueue;
 
         // Removed CreateAsync - Added PersistFromEvent instead
@@ -53,7 +58,9 @@ namespace ArticleService.Data
             if (repo is ArticleRepository ar && await ar.TryGetByCorrelationId(correlationId, ct) is { } existing)
             {
                 _logger.LogInformation("Event article already exists CorrelationId={CorrelationId} ArticleId={ArticleId}", correlationId, existing.Id);
-                return Map(existing);
+                var existingDto = Map(existing);
+                if (_cacheEnabled) await _cache.Upsert(existingDto, continent, ct);
+                return existingDto;
             }
 
             var entity = new Article
@@ -68,15 +75,21 @@ namespace ArticleService.Data
             try
             {
                 entity = await repo.AddAsync(entity, ct);
+                var dto = Map(entity);
+                if (_cacheEnabled) await _cache.Upsert(dto, continent, ct);
                 _logger.LogInformation("Persisted event article CorrelationId={CorrelationId} ArticleId={ArticleId}",
                     correlationId, entity.Id);
-                return Map(entity);
+                return dto;
             }
             catch (DbUpdateException ex)
             {
                 _logger.LogWarning(ex, "Race on CorrelationId={CorrelationId}, realoding", correlationId);
                 if (repo is ArticleRepository ar2 && await ar2.TryGetByCorrelationId(correlationId, ct) is { } raced)
-                    return Map(raced);
+                {
+                    var dto = Map(raced);
+                    if (_cacheEnabled) await _cache.Upsert(dto, continent, ct);
+                    return dto;
+                }
                 throw;
             }
         }
@@ -84,18 +97,29 @@ namespace ArticleService.Data
         
         public async Task<ArticleReadDTO?> GetAsync(int id, Continent? continent, bool includeGlobalFallBack, CancellationToken ct)
         {
+            if (_cacheEnabled)
+            {
+                var (cached, hit) = await _cache.TryGet(id, continent, ct);
+                if (hit) return cached;
+            }
+
             if (continent is not null)
             {
                 var continentRepo = _factory.CreateForContinent(continent.Value);
                 var fromContinent = await continentRepo.GetAsync(id, ct);
-                if (fromContinent is not null) return Map(fromContinent);
+                if (fromContinent is not null)
+                {
+                    var dto = Map(fromContinent);
+                    if (_cacheEnabled) await _cache.Upsert(dto, continent, ct);
+                    return dto;
+                }
                 
 
                 if(includeGlobalFallBack)
                 {
-                    var globalRepo = _factory.CreateGlobal();
-                    var globalFound = await globalRepo.GetAsync(id, ct);
-                    return globalFound is null ? null : Map(globalFound);
+                    
+                     return await GetAsync(id, null, false, ct);
+                    
                 }
 
                 return null;
@@ -104,34 +128,70 @@ namespace ArticleService.Data
             // If no continent provided: use Global
             var repo = _factory.CreateGlobal();
             var article = await repo.GetAsync(id, ct);
-            return article is null ? null : Map(article);
+            if (article is null) return null;
+            var globalDto = Map(article);
+            if (_cacheEnabled) await _cache.Upsert(globalDto, null, ct);
+            return globalDto;
         }
 
         public async Task<IReadOnlyList<ArticleReadDTO>> GetListAsync(Continent? continent, int page, int pageSize, bool includeGlobal, CancellationToken ct)
         {
             var skip = (page - 1) * pageSize;
-            var list = new List<ArticleReadDTO>();
+            
 
             if (continent is not null)
             {
-                var continentRepo = _factory.CreateForContinent(continent.Value);
-                var continentItems = await continentRepo.GetPagedAsync(skip, pageSize, ct);
-                list.AddRange(continentItems.Select(Map));
-
-                if (includeGlobal)
+                if (_cacheEnabled)
                 {
-                    var globalRepo = _factory.CreateGlobal();
-                    var globalItems = await globalRepo.GetPagedAsync(skip, pageSize, ct);
-                    list.AddRange(globalItems.Select(Map));
+                    var cached = await _cache.GetRecent(null, skip, pageSize, ct);
+                    if (cached.Count > 0) return cached.ToList();
                 }
-
-                list = list.OrderByDescending(a => a.PublishedDate).Take(pageSize).ToList();
+                var repo = _factory.CreateGlobal();
+                var onlyGlobal = await repo.GetPagedAsync(skip, pageSize, ct);
+                var list = onlyGlobal.Select(Map).ToList();
+                if (_cacheEnabled) foreach (var a in list) await _cache.Upsert(a, null, ct);
                 return list;
             }
-            
-            var repo = _factory.CreateGlobal();
-            var onlyGlobal = await repo.GetPagedAsync(skip, pageSize, ct);
-            return onlyGlobal.Select(Map).ToList();
+
+            // Continent path
+            IReadOnlyList<ArticleReadDTO> continentSlice;
+            if (_cacheEnabled)
+            {
+                continentSlice = await _cache.GetRecent(continent, skip, pageSize, ct);
+                if (continentSlice.Count == 0)
+                {
+                    var cRepo = _factory.CreateForContinent(continent.Value);
+                    var fromDb = await cRepo.GetPagedAsync(skip, pageSize, ct);
+                    continentSlice = fromDb.Select(Map).ToList();
+                }
+            }
+            else
+            {
+                var cRepo = _factory.CreateForContinent(continent.Value);
+                var fromDb = await cRepo.GetPagedAsync(skip, pageSize, ct);
+                continentSlice = fromDb.Select(Map).ToList();
+            }
+
+            if (!includeGlobal)
+                return continentSlice.ToList();
+
+            IReadOnlyList<ArticleReadDTO> globalSlice;
+            if (_cacheEnabled)
+            {
+                globalSlice = await _cache.GetRecent(null, skip, pageSize, ct);
+                if (globalSlice.Count == 0)
+                {
+                    var gRepo = _factory.CreateGlobal();
+                    globalSlice = (await gRepo.GetPagedAsync(skip, pageSize, ct)).Select(Map).ToList();
+                }
+            }
+            else
+            {
+                var gRepo = _factory.CreateGlobal();
+                globalSlice = (await gRepo.GetPagedAsync(skip, pageSize, ct)).Select(Map).ToList();
+            }
+
+            return continentSlice.Concat(globalSlice).OrderByDescending(a => a.PublishedDate).Take(pageSize).ToList();
         }
 
         public async Task<bool> UpdateAsync(int id, Continent? continent, ArticleUpdateDTO dto, CancellationToken ct)
@@ -144,6 +204,7 @@ namespace ArticleService.Data
             existing.Content = dto.Content;
 
             await repo.UpdateAsync(existing, ct);
+            if (_cacheEnabled) await _cache.Invalidate(id, continent, ct);
             return true;
         }
 
@@ -154,6 +215,7 @@ namespace ArticleService.Data
             if (existing is null) return false;
 
             await repo.DeleteAsync(existing, ct);
+            if (_cacheEnabled) await _cache.Invalidate(id, continent, ct);
             return true;
         }
 

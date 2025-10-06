@@ -1,3 +1,4 @@
+using ArticleService.Caching;
 using ArticleService.Data;
 using ArticleService.Infrastructure.Interface;
 using ArticleService.Messaging;
@@ -22,9 +23,21 @@ builder.Services.AddSingleton<ArticleService.Infrastructure.Interface.IConnectio
 builder.Services.AddSingleton<ArticleService.Interfaces.IArticleRepositoryFactory, ArticleService.Data.ArticleRepositoryFactory>();
 builder.Services.AddScoped<ArticleService.Interfaces.IArticleService, ArticleService.Data.ArticleService>();
 
+// Caching Redis for all shards 
+var articleCacheEnabled = builder.Configuration.GetValue("ArticleCache:Enabled", true);
+if (articleCacheEnabled)
+{
+    builder.Services.AddSingleton<IRedisConnectionProvider, RedisConnectionProvider>();
+    builder.Services.AddSingleton<IArticleCache, RedisArticleCache>();
+    builder.Services.AddHostedService < ArticleShardCachePrewarmHostedService>();
+}
+else
+{
+    builder.Services.AddSingleton<IArticleCache, NoOpArticleCache>();
+}
 
-// Messaging
-builder.Services.AddArticleQueue(builder.Configuration);
+    // Messaging
+    builder.Services.AddArticleQueue(builder.Configuration);
 builder.Services.AddHostedService<ArticleQueueSubscriber>();
 
 var runMigrations = builder.Configuration.GetValue("Migrations:RunOnStartup", true);
