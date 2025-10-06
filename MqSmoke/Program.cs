@@ -78,7 +78,6 @@ using (var pubCts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
         CorrelationId = Guid.NewGuid(),
         Title = "Test Article",
         Content = "This is a test article.",
-        Author = "TestAuthor",
         Continent = "Global",
         PublishedAt = DateTimeOffset.UtcNow
     }, pubCts.Token);

@@ -8,6 +8,7 @@ using Serilog.Formatting.Compact;
 using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using OpenTelemetry.Metrics;
 
 namespace Shared.Observability;
 
@@ -17,6 +18,7 @@ namespace Shared.Observability;
         {
             var enabled = builder.Configuration.GetValue("Observability:Enabled", true);
             if (!enabled) return;
+
 
             // Allowing config/env to override the passed service name
             var configuredName = builder.Configuration["Observability:ServiceName"];
@@ -67,6 +69,9 @@ namespace Shared.Observability;
                         {
                             tp.AddOtlpExporter(o => o.Endpoint = endpointUri!);
                         }
+                    }).WithMetrics(mp =>
+                    {
+                        mp.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation().AddRuntimeInstrumentation().AddPrometheusExporter();
                     });
             }
             catch
@@ -83,6 +88,7 @@ namespace Shared.Observability;
         {
             try
             {
+                app.MapPrometheusScrapingEndpoint();
                 app.Use(async (_, next) =>
                 {
                     var act = Activity.Current;

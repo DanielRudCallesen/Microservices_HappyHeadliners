@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "b0h5/O8hPGk=",
+  "dgSpecHash": "/x3KVT1vjw0=",
   "success": true,
   "projectFilePath": "C:\\Users\\Danie\\source\\repos\\Development_Of_Large_Systems_Projects\\NewsletterService\\NewsletterService.csproj",
   "expectedPackageFiles": [
@@ -31,9 +31,11 @@
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.api\\1.13.0\\opentelemetry.api.1.13.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.api.providerbuilderextensions\\1.13.0\\opentelemetry.api.providerbuilderextensions.1.13.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.exporter.opentelemetryprotocol\\1.13.0\\opentelemetry.exporter.opentelemetryprotocol.1.13.0.nupkg.sha512",
+    "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.exporter.prometheus.aspnetcore\\1.13.0-beta.1\\opentelemetry.exporter.prometheus.aspnetcore.1.13.0-beta.1.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.extensions.hosting\\1.13.0\\opentelemetry.extensions.hosting.1.13.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.instrumentation.aspnetcore\\1.12.0\\opentelemetry.instrumentation.aspnetcore.1.12.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.instrumentation.http\\1.12.0\\opentelemetry.instrumentation.http.1.12.0.nupkg.sha512",
+    "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.instrumentation.runtime\\1.12.0\\opentelemetry.instrumentation.runtime.1.12.0.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\opentelemetry.instrumentation.sqlclient\\1.12.0-beta.2\\opentelemetry.instrumentation.sqlclient.1.12.0-beta.2.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\rabbitmq.client\\7.1.2\\rabbitmq.client.7.1.2.nupkg.sha512",
     "C:\\Users\\Danie\\.nuget\\packages\\serilog\\4.3.0\\serilog.4.3.0.nupkg.sha512",

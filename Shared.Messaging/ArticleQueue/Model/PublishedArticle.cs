@@ -13,7 +13,7 @@ namespace Shared.Messaging.ArticleQueue.Model
         public required  Guid CorrelationId{ get; init; }
         public required string Title { get; init; }
         public required string Content { get; init; }
-        public string? Author { get; init; } // Maybe remove? Got no Authentication yet
+        //public string? Author { get; init; } // Maybe remove? Got no Authentication yet
         public string? Continent { get; init; } // string to avoid tight coupling with enum
         public DateTimeOffset PublishedAt { get; init; } = DateTimeOffset.UtcNow;
     }

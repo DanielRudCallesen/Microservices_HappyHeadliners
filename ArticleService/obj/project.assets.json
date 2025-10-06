@@ -1229,6 +1229,25 @@
           }
         }
       },
+      "OpenTelemetry.Exporter.Prometheus.AspNetCore/1.13.0-beta.1": {
+        "type": "package",
+        "dependencies": {
+          "OpenTelemetry": "[1.13.0, 2.0.0)"
+        },
+        "compile": {
+          "lib/net8.0/OpenTelemetry.Exporter.Prometheus.AspNetCore.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/OpenTelemetry.Exporter.Prometheus.AspNetCore.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "OpenTelemetry.Extensions.Hosting/1.13.0": {
         "type": "package",
         "dependencies": {
@@ -1279,6 +1298,22 @@
         },
         "runtime": {
           "lib/net8.0/OpenTelemetry.Instrumentation.Http.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "OpenTelemetry.Instrumentation.Runtime/1.12.0": {
+        "type": "package",
+        "dependencies": {
+          "OpenTelemetry.Api": "[1.12.0, 2.0.0)"
+        },
+        "compile": {
+          "lib/net8.0/OpenTelemetry.Instrumentation.Runtime.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/OpenTelemetry.Instrumentation.Runtime.dll": {
             "related": ".xml"
           }
         }
@@ -2275,9 +2310,11 @@
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "1.12.0",
+          "OpenTelemetry.Exporter.Prometheus.AspNetCore": "1.13.0-beta.1",
           "OpenTelemetry.Extensions.Hosting": "1.12.0",
           "OpenTelemetry.Instrumentation.AspNetCore": "1.12.0",
           "OpenTelemetry.Instrumentation.Http": "1.12.0",
+          "OpenTelemetry.Instrumentation.Runtime": "1.12.0",
           "OpenTelemetry.Instrumentation.SqlClient": "1.12.0-beta.2",
           "Serilog.AspNetCore": "9.0.0",
           "Serilog.Formatting.Compact": "3.0.0",
@@ -4811,6 +4848,25 @@
         "opentelemetry.exporter.opentelemetryprotocol.nuspec"
       ]
     },
+    "OpenTelemetry.Exporter.Prometheus.AspNetCore/1.13.0-beta.1": {
+      "sha512": "AGzbBMn4hq1ivSlHs51XZ7psKtUiJtDXFAxn3Z1IS4L7JeHXq17I4BJ+iRzy6n9jA++M2faj2pILtMY6P6WBag==",
+      "type": "package",
+      "path": "opentelemetry.exporter.prometheus.aspnetcore/1.13.0-beta.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "README.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net8.0/OpenTelemetry.Exporter.Prometheus.AspNetCore.dll",
+        "lib/net8.0/OpenTelemetry.Exporter.Prometheus.AspNetCore.xml",
+        "lib/net9.0/OpenTelemetry.Exporter.Prometheus.AspNetCore.dll",
+        "lib/net9.0/OpenTelemetry.Exporter.Prometheus.AspNetCore.xml",
+        "opentelemetry-icon-color.png",
+        "opentelemetry.exporter.prometheus.aspnetcore.1.13.0-beta.1.nupkg.sha512",
+        "opentelemetry.exporter.prometheus.aspnetcore.nuspec"
+      ]
+    },
     "OpenTelemetry.Extensions.Hosting/1.13.0": {
       "sha512": "x0lNrogp6gP+yb8BnGwA1a3aa+KELARNC/ti1aiWIhqztMOliVyhSXNWPznoL1x+JrwpBE+iJqV66m21131ZRA==",
       "type": "package",
@@ -4868,6 +4924,25 @@
         "opentelemetry-icon-color.png",
         "opentelemetry.instrumentation.http.1.12.0.nupkg.sha512",
         "opentelemetry.instrumentation.http.nuspec"
+      ]
+    },
+    "OpenTelemetry.Instrumentation.Runtime/1.12.0": {
+      "sha512": "xmd0TAm2x+T3ztdf5BolIwLPh+Uy6osaBeIQtCXv611PN7h/Pnhsjg5lU2hkAWj7M7ns74U5wtVpS8DXmJ+94w==",
+      "type": "package",
+      "path": "opentelemetry.instrumentation.runtime/1.12.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "lib/net462/OpenTelemetry.Instrumentation.Runtime.dll",
+        "lib/net462/OpenTelemetry.Instrumentation.Runtime.xml",
+        "lib/net8.0/OpenTelemetry.Instrumentation.Runtime.dll",
+        "lib/net8.0/OpenTelemetry.Instrumentation.Runtime.xml",
+        "lib/netstandard2.0/OpenTelemetry.Instrumentation.Runtime.dll",
+        "lib/netstandard2.0/OpenTelemetry.Instrumentation.Runtime.xml",
+        "opentelemetry-icon-color.png",
+        "opentelemetry.instrumentation.runtime.1.12.0.nupkg.sha512",
+        "opentelemetry.instrumentation.runtime.nuspec"
       ]
     },
     "OpenTelemetry.Instrumentation.SqlClient/1.12.0-beta.2": {

@@ -29,6 +29,10 @@ x-rabbitmq-common-env: &rabbitmq-common-env
   RabbitMQ__Exchange: "article.published"
   RabbitMQ__QueueDurable: "true"
   
+
+networks:
+    happyheadlines:
+        name: happyheadlines
 services:
     global:    
         <<: *mssql-base
@@ -260,6 +264,41 @@ services:
             interval: 10s
             timeout: 5s
             retries: 12
+    redis:
+        image: redis:7-alpine
+        container_name: redis
+        command: ["redis-server", "--save", "''","--appendonly", "no"]
+        ports:
+            - "6379:6379"
+        networks: [happyheadlines]
+        restarted: unless-stopped
+
+    prometheus:
+        image: prom/prometheus:latest
+        container_name: prometheus
+        command: ["--config.file=/etc/prometheus/prometheus.yml"]
+        volumes:
+            - ./observability/prometheus/prometheus.yml:/etc/prometheus/promethus.yml:ro
+        ports:
+            - "9090:9090"
+        networks: [happyheadlines]
+        restarted: unless-stopped
+
+    grafana:
+        image: grafana/grafana:latest
+        container_name: grafana
+        environment:
+            GF_SECURITY_ADMIN_USER: "admin"
+            GF_SECURITY_ADMIN_PASSWORD: "admin"
+        volumes:
+            - ./observability/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+            - ./observability/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+            - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+        ports:
+            - "3000:3000"
+        depends_on: [prometheus]
+        networks: [happyheadlines]
+        restarted: unless-stopped
 
 volumes:
     mssql-global:
