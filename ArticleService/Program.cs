@@ -29,7 +29,7 @@ if (articleCacheEnabled)
 {
     builder.Services.AddSingleton<IRedisConnectionProvider, RedisConnectionProvider>();
     builder.Services.AddSingleton<IArticleCache, RedisArticleCache>();
-    builder.Services.AddHostedService < ArticleShardCachePrewarmHostedService>();
+    builder.Services.AddHostedService<ArticleShardCachePrewarmHostedService>();
 }
 else
 {

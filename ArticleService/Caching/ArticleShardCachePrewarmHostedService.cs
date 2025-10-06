@@ -55,16 +55,16 @@ namespace ArticleService.Caching
 
                 sw.Stop();
                 _runs.Add(1);
-                _duration.Record(sw.ElapsedMilliseconds);
+                _duration.Record(sw.Elapsed.TotalMilliseconds);
                 _logger.LogInformation("Article cache prewarm completed for all shards in {Ms} ms",
-                    sw.ElapsedMilliseconds);
+                    sw.Elapsed.TotalMilliseconds);
             }
             catch (Exception ex)
             {
                 sw.Stop();
                 _errors.Add(1);
-                _duration.Record(sw.ElapsedMilliseconds);
-                _logger.LogWarning(ex, "Article cache prewarm failed after {Ms} ms", sw.ElapsedMilliseconds);
+                _duration.Record(sw.Elapsed.TotalMilliseconds);
+                _logger.LogWarning(ex, "Article cache prewarm failed after {Ms} ms", sw.Elapsed.TotalMilliseconds);
             }
         }
 

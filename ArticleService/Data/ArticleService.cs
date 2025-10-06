@@ -139,16 +139,18 @@ namespace ArticleService.Data
             var skip = (page - 1) * pageSize;
             
 
-            if (continent is not null)
+            if (continent is null)
             {
                 if (_cacheEnabled)
                 {
                     var cached = await _cache.GetRecent(null, skip, pageSize, ct);
                     if (cached.Count > 0) return cached.ToList();
                 }
+
                 var repo = _factory.CreateGlobal();
                 var onlyGlobal = await repo.GetPagedAsync(skip, pageSize, ct);
                 var list = onlyGlobal.Select(Map).ToList();
+
                 if (_cacheEnabled) foreach (var a in list) await _cache.Upsert(a, null, ct);
                 return list;
             }
