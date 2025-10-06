@@ -1,17 +1,20 @@
-﻿using CommentService.Data;
+﻿using CommentService.Caching;
+using CommentService.Data;
 using CommentService.Interface;
 using CommentService.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommentService.Services
 {
-    public class CommentService(CommentDbContext db, IProfanityClient profanityClient, ILocalProfanityFilter fallback, ILogger<CommentService> logger, IArticleExistenceClient articleClient) : ICommentService
+    public class CommentService(CommentDbContext db, IProfanityClient profanityClient, ILocalProfanityFilter fallback, ILogger<CommentService> logger, IArticleExistenceClient articleClient, ICommentCache commentCache, IConfiguration config) : ICommentService
     {
         private readonly CommentDbContext _db = db;
         private readonly IProfanityClient _profanity = profanityClient;
         private readonly ILocalProfanityFilter _fallback = fallback;
         private readonly ILogger<CommentService> _logger = logger;
         private readonly IArticleExistenceClient _articleClient = articleClient;
+        private readonly ICommentCache _cache = commentCache;
+        private readonly bool _cacheEnabled = config.GetValue("CommentCache:Enabled", true);
 
         public async Task<CommentDTO.CommentReadDto> CreateAsync(CommentDTO.CommentCreateDto dto, CancellationToken ct)
         {
@@ -60,8 +63,13 @@ namespace CommentService.Services
             _db.Comments.Add(entity);
             await _db.SaveChangesAsync(ct);
 
-            return new CommentDTO.CommentReadDto(entity.Id, entity.ArticleId, entity.UserId, entity.UserName, entity.Content, entity.CreatedAt, entity.UpdatedAt);
-                
+            var created = new CommentDTO.CommentReadDto(entity.Id, entity.ArticleId, entity.UserId, entity.UserName,
+                entity.Content, entity.CreatedAt, entity.UpdatedAt);
+
+            if (_cacheEnabled) await _cache.AppendIfPresent(entity.ArticleId, created, ct);
+
+            return created;
+
         }
 
         public async Task<CommentDTO.CommentReadDto?> GetAsync(int id, CancellationToken ct)
@@ -77,14 +85,32 @@ namespace CommentService.Services
             page = Math.Max(1, page);
             pageSize = Math.Clamp(pageSize, 1, 100);
 
+            IReadOnlyList<CommentDTO.CommentReadDto>? all = null;
+            if (_cacheEnabled)
+            {
+                var (cached, hit) = await _cache.TryGetAll(articleId, ct);
+                if (hit)
+                {
+                    all = cached!;
+                    var itemsC = all.OrderByDescending(c => c.CreatedAt).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    return new CommentDTO.PageResult<CommentDTO.CommentReadDto>(itemsC, page, pageSize, all.Count);
+                }
+            }
+            // Cache miss: Load full list, store, then page in memory
             var query = _db.Comments.AsNoTracking().Where( c => c.ArticleId == articleId).OrderByDescending(c => c.CreatedAt);
 
-            var total = await query.CountAsync(ct);
-            var items = await query.Skip((page - 1) * pageSize).Take(pageSize).Select(c =>
+            var list = await query.ToListAsync(ct);
+            var dtos = list.Select(c =>
                 new CommentDTO.CommentReadDto(c.Id, c.ArticleId, c.UserId, c.UserName, c.Content, c.CreatedAt,
-                    c.UpdatedAt)).ToListAsync(ct);
+                    c.UpdatedAt)).ToList();
+            all = dtos;
 
-            return new CommentDTO.PageResult<CommentDTO.CommentReadDto>(items, page, pageSize, total);
+            if (_cacheEnabled) await _cache.StoreAll(articleId, all, ct);
+
+            var items = all.OrderByDescending(c => c.CreatedAt).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            
+
+            return new CommentDTO.PageResult<CommentDTO.CommentReadDto>(items, page, pageSize, all.Count);
         }
     }
 }

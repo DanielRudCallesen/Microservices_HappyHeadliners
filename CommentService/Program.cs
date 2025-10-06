@@ -1,3 +1,4 @@
+using CommentService.Caching;
 using CommentService.Clients;
 using CommentService.Data;
 using CommentService.Interface;
@@ -41,8 +42,20 @@ builder.Services.AddHttpClient<IArticleExistenceClient, ArticleExistenceHttpClie
     client.Timeout = TimeSpan.FromSeconds(10);
 }).AddStandardResilienceHandler();
 
-// Background refresh for local dictionary
-builder.Services.AddHostedService<ProfanityDictionaryRefresher>();
+// Comment Cache Redis
+var CommentCacheEnabled = builder.Configuration.GetValue("CommentCache:Enabled", true);
+if (CommentCacheEnabled)
+{
+    builder.Services.AddSingleton<IRedisConnectionProvider, RedisConnectionProvider>();
+    builder.Services.AddSingleton<ICommentCache, RedisCommentCache>();
+}
+else
+{
+    builder.Services.AddSingleton<ICommentCache, NoOpCommentCache>();
+}
+
+    // Background refresh for local dictionary
+    builder.Services.AddHostedService<ProfanityDictionaryRefresher>();
 
 
 var app = builder.Build();
