@@ -83,3 +83,5 @@ C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\PublisherServi
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\PublisherService\obj\Debug\net8.0\PublisherService.pdb
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\PublisherService\obj\Debug\net8.0\PublisherService.genruntimeconfig.cache
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\PublisherService\obj\Debug\net8.0\ref\PublisherService.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\PublisherService\bin\Debug\net8.0\OpenTelemetry.Exporter.Prometheus.AspNetCore.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\PublisherService\bin\Debug\net8.0\OpenTelemetry.Instrumentation.Runtime.dll

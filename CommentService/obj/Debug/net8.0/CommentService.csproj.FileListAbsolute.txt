@@ -250,3 +250,7 @@ C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\CommentService
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\CommentService\bin\Debug\net8.0\Serilog.Sinks.Seq.dll
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\CommentService\bin\Debug\net8.0\Shared.Observability.dll
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\CommentService\bin\Debug\net8.0\Shared.Observability.pdb
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\CommentService\bin\Debug\net8.0\OpenTelemetry.Exporter.Prometheus.AspNetCore.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\CommentService\bin\Debug\net8.0\OpenTelemetry.Instrumentation.Runtime.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\CommentService\bin\Debug\net8.0\Pipelines.Sockets.Unofficial.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\CommentService\bin\Debug\net8.0\StackExchange.Redis.dll

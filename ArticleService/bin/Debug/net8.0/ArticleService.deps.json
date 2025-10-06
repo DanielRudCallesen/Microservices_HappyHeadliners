@@ -27,6 +27,7 @@
           "Serilog.Sinks.Seq": "9.0.0",
           "Shared.Messaging": "1.0.0",
           "Shared.Observability": "1.0.0",
+          "StackExchange.Redis": "2.9.25",
           "Swashbuckle.AspNetCore": "6.6.2"
         },
         "runtime": {
@@ -907,6 +908,17 @@
           }
         }
       },
+      "OpenTelemetry.Exporter.Prometheus.AspNetCore/1.13.0-beta.1": {
+        "dependencies": {
+          "OpenTelemetry": "1.13.0"
+        },
+        "runtime": {
+          "lib/net8.0/OpenTelemetry.Exporter.Prometheus.AspNetCore.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.13.0.1802"
+          }
+        }
+      },
       "OpenTelemetry.Extensions.Hosting/1.13.0": {
         "dependencies": {
           "Microsoft.Extensions.Hosting.Abstractions": "9.0.0",
@@ -943,6 +955,17 @@
           }
         }
       },
+      "OpenTelemetry.Instrumentation.Runtime/1.12.0": {
+        "dependencies": {
+          "OpenTelemetry.Api": "1.13.0"
+        },
+        "runtime": {
+          "lib/net8.0/OpenTelemetry.Instrumentation.Runtime.dll": {
+            "assemblyVersion": "1.12.0.496",
+            "fileVersion": "1.12.0.496"
+          }
+        }
+      },
       "OpenTelemetry.Instrumentation.SqlClient/1.12.0-beta.2": {
         "dependencies": {
           "Microsoft.Extensions.Configuration": "9.0.9",
@@ -953,6 +976,17 @@
           "lib/net8.0/OpenTelemetry.Instrumentation.SqlClient.dll": {
             "assemblyVersion": "1.12.0.582",
             "fileVersion": "1.12.0.582"
+          }
+        }
+      },
+      "Pipelines.Sockets.Unofficial/2.2.8": {
+        "dependencies": {
+          "System.IO.Pipelines": "9.0.9"
+        },
+        "runtime": {
+          "lib/net5.0/Pipelines.Sockets.Unofficial.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "2.2.8.1080"
           }
         }
       },
@@ -1108,6 +1142,18 @@
           "lib/net6.0/Serilog.Sinks.Seq.dll": {
             "assemblyVersion": "9.0.0.0",
             "fileVersion": "9.0.0.0"
+          }
+        }
+      },
+      "StackExchange.Redis/2.9.25": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.9",
+          "Pipelines.Sockets.Unofficial": "2.2.8"
+        },
+        "runtime": {
+          "lib/net8.0/StackExchange.Redis.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.9.25.3041"
           }
         }
       },
@@ -1465,9 +1511,11 @@
       "Shared.Observability/1.0.0": {
         "dependencies": {
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "1.13.0",
+          "OpenTelemetry.Exporter.Prometheus.AspNetCore": "1.13.0-beta.1",
           "OpenTelemetry.Extensions.Hosting": "1.13.0",
           "OpenTelemetry.Instrumentation.AspNetCore": "1.12.0",
           "OpenTelemetry.Instrumentation.Http": "1.12.0",
+          "OpenTelemetry.Instrumentation.Runtime": "1.12.0",
           "OpenTelemetry.Instrumentation.SqlClient": "1.12.0-beta.2",
           "Serilog.AspNetCore": "9.0.0",
           "Serilog.Formatting.Compact": "3.0.0",
@@ -1894,6 +1942,13 @@
       "path": "opentelemetry.exporter.opentelemetryprotocol/1.13.0",
       "hashPath": "opentelemetry.exporter.opentelemetryprotocol.1.13.0.nupkg.sha512"
     },
+    "OpenTelemetry.Exporter.Prometheus.AspNetCore/1.13.0-beta.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AGzbBMn4hq1ivSlHs51XZ7psKtUiJtDXFAxn3Z1IS4L7JeHXq17I4BJ+iRzy6n9jA++M2faj2pILtMY6P6WBag==",
+      "path": "opentelemetry.exporter.prometheus.aspnetcore/1.13.0-beta.1",
+      "hashPath": "opentelemetry.exporter.prometheus.aspnetcore.1.13.0-beta.1.nupkg.sha512"
+    },
     "OpenTelemetry.Extensions.Hosting/1.13.0": {
       "type": "package",
       "serviceable": true,
@@ -1915,12 +1970,26 @@
       "path": "opentelemetry.instrumentation.http/1.12.0",
       "hashPath": "opentelemetry.instrumentation.http.1.12.0.nupkg.sha512"
     },
+    "OpenTelemetry.Instrumentation.Runtime/1.12.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xmd0TAm2x+T3ztdf5BolIwLPh+Uy6osaBeIQtCXv611PN7h/Pnhsjg5lU2hkAWj7M7ns74U5wtVpS8DXmJ+94w==",
+      "path": "opentelemetry.instrumentation.runtime/1.12.0",
+      "hashPath": "opentelemetry.instrumentation.runtime.1.12.0.nupkg.sha512"
+    },
     "OpenTelemetry.Instrumentation.SqlClient/1.12.0-beta.2": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-EGlwhAP+ZccCnd83hzUUqJT6qJK8E3hoRGJYNrB+YSV+7NvSjr+JAk6RoIgbZux06DL+0bbx4HRgX2osiVdLbQ==",
       "path": "opentelemetry.instrumentation.sqlclient/1.12.0-beta.2",
       "hashPath": "opentelemetry.instrumentation.sqlclient.1.12.0-beta.2.nupkg.sha512"
+    },
+    "Pipelines.Sockets.Unofficial/2.2.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zG2FApP5zxSx6OcdJQLbZDk2AVlN2BNQD6MorwIfV6gVj0RRxWPEp2LXAxqDGZqeNV1Zp0BNPcNaey/GXmTdvQ==",
+      "path": "pipelines.sockets.unofficial/2.2.8",
+      "hashPath": "pipelines.sockets.unofficial.2.2.8.nupkg.sha512"
     },
     "RabbitMQ.Client/7.1.2": {
       "type": "package",
@@ -2012,6 +2081,13 @@
       "sha512": "sha512-aNU8A0K322q7+voPNmp1/qNPH+9QK8xvM1p72sMmCG0wGlshFzmtDW9QnVSoSYCj0MgQKcMOlgooovtBhRlNHw==",
       "path": "serilog.sinks.seq/9.0.0",
       "hashPath": "serilog.sinks.seq.9.0.0.nupkg.sha512"
+    },
+    "StackExchange.Redis/2.9.25": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4lcZbdV/S/hzcWeLzfU3Sam7JyNChsizjbJBuYjcwHbpG1T+CGafuOjxem93DnfYfbyn/QbXVjHsGRMoi2hsqQ==",
+      "path": "stackexchange.redis/2.9.25",
+      "hashPath": "stackexchange.redis.2.9.25.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore/6.6.2": {
       "type": "package",

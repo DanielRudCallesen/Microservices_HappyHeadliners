@@ -373,3 +373,7 @@ C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\Serilog.Enrichers.Environment.dll
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\Serilog.Enrichers.Process.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\OpenTelemetry.Exporter.Prometheus.AspNetCore.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\OpenTelemetry.Instrumentation.Runtime.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\Pipelines.Sockets.Unofficial.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\ArticleService\bin\Debug\net8.0\StackExchange.Redis.dll

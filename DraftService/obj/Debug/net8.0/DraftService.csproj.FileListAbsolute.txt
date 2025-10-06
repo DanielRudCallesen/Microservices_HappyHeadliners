@@ -214,3 +214,5 @@ C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\DraftService\o
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\DraftService\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\DraftService\bin\Debug\net8.0\Shared.Observability.dll
 C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\DraftService\bin\Debug\net8.0\Shared.Observability.pdb
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\DraftService\bin\Debug\net8.0\OpenTelemetry.Exporter.Prometheus.AspNetCore.dll
+C:\Users\Danie\source\repos\Development_Of_Large_Systems_Projects\DraftService\bin\Debug\net8.0\OpenTelemetry.Instrumentation.Runtime.dll
