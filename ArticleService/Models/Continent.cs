@@ -8,6 +8,7 @@
         Europe,
         NorthAmerica,
         Australia,
-        SouthAmerica
+        SouthAmerica,
+        Global
     }
 }

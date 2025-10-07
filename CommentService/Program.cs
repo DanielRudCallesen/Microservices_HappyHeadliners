@@ -18,6 +18,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<ICommentService, CommentService.Services.CommentService>();
+
 // Database
 builder.Services.AddDbContext<CommentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CommentDatabase"), o => o.EnableRetryOnFailure()));

@@ -44,7 +44,7 @@ namespace PublisherService.Controllers
             var correlationId = Guid.NewGuid();
             activtiy?.SetTag("article.correlation_id", correlationId);
             activtiy?.SetTag("article.title", request.Title);
-            var continent = string.IsNullOrWhiteSpace(request.Continent) ? "Global" : request.Continent.Trim();
+            
 
             var evt = new PublishedArticle
             {
@@ -52,7 +52,7 @@ namespace PublisherService.Controllers
                 Title = request.Title,
                 Content = request.Content,
                 //Author = request.Author,
-                Continent = continent,
+                Continent = normalizedContinent,
                 PublishedAt = DateTimeOffset.UtcNow
             };
 

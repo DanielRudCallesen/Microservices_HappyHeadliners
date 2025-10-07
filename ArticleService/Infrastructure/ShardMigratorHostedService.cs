@@ -6,15 +6,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ArticleService.Infrastructure
 {
-    public class ShardMigratorHostedService(IConnectionStringResolver resolver, ILogger<ShardMigratorHostedService> logger) : IHostedService
+    public class ShardMigratorHostedService(IConnectionStringResolver resolver, ILogger<ShardMigratorHostedService> logger, IConfiguration config) : IHostedService
     {
         private readonly IConnectionStringResolver _resolver = resolver;
         private readonly ILogger<ShardMigratorHostedService> _logger = logger;
+        private readonly IConfiguration _config = config;
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             // Had to add delay, because the mirgation only succussed on the 8th try when server was ready.
-            try { await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken); } catch {}
+            try { await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken); } catch { }
+
+            var enabled = _config.GetSection("Migrations:EnabledShards").Get<string[]>()
+                ?.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()).ToArray();
+
+            if (enabled is null || enabled.Length == 0)
+            {
+                var csv = _config["Migrations:EnabledShards"];
+                if (!string.IsNullOrWhiteSpace(csv))
+                {
+                    enabled = csv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                }
+            }
+
+            _logger.LogInformation("Shard migrator enabled shards: {Shards}", enabled is {Length: > 0} ? string.Join(", ", enabled) : "All");
 
             var targets = new List<(string Name, string? Cs)>();
             string? Try(Func<string> get, string name)
@@ -27,10 +42,39 @@ namespace ArticleService.Infrastructure
                 }
             }
 
-            targets.Add(("Global", Try(_resolver.GetConnectionStringForGlobal, "Global")));
+            if (enabled is { Length: > 0 })
+            {
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var shard in enabled)
+                {
+                    if (!seen.Add(shard)) continue;
 
-            foreach (var c in Enum.GetValues<Continent>())
-                targets.Add(($"{c}", Try(() => _resolver.GetConnectionStringForContinent(c), $"{c}")));
+                    if (string.Equals(shard, "Global", StringComparison.OrdinalIgnoreCase))
+                    {
+                        targets.Add(("Global", Try(_resolver.GetConnectionStringForGlobal, "Global")));
+                        continue;
+                    }
+
+                    if (Enum.TryParse<Continent>(shard, true, out var parsed))
+                    {
+                        targets.Add(($"{parsed}", Try(() => _resolver.GetConnectionStringForContinent(parsed), $"{parsed}")));
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Unknown shard name '{Shard}' in Migrations:EnabledShards. Skipping.", shard);
+                    }
+                }
+            }
+            else
+            {
+                // Default behavior global + all 
+                targets.Add(("Global", Try(_resolver.GetConnectionStringForGlobal, "Global")));
+
+                foreach (var c in Enum.GetValues<Continent>())
+                    targets.Add(($"{c}", Try(() => _resolver.GetConnectionStringForContinent(c), $"{c}")));
+            }
+
+                
 
             foreach (var (name, cs) in targets.Where(t => !string.IsNullOrWhiteSpace(t.Cs)))
             {

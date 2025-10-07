@@ -10,4 +10,8 @@ scrape_configs:
   - job_name: "comment-service"
     metrics_path: /metrics
     static_configs:
-      - targets: ["comment-service:8080"]
+      - targets: ["commentservice:8080"]
+
+  - job_name: "redis"
+    static_configs:
+      - targets: ["redis-exporter:9121"]

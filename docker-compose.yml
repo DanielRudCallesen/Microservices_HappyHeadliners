@@ -1,4 +1,7 @@
-﻿
+﻿networks:
+    default:
+        name: happyheadlines
+
 x-mssql-base: &mssql-base
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
@@ -30,20 +33,17 @@ x-rabbitmq-common-env: &rabbitmq-common-env
   RabbitMQ__QueueDurable: "true"
   
 
-networks:
-    happyheadlines:
-        name: happyheadlines
 services:
     global:    
         <<: *mssql-base
         container_name: global
         volumes:
         - mssql-global:/var/opt/mssql
-    #europe:    
-        #<<: *mssql-base
-        #container_name: europe
-        #volumes:
-        #- mssql-europe:/var/opt/mssql
+    europe:    
+        <<: *mssql-base
+        container_name: europe
+        volumes:
+        - mssql-europe:/var/opt/mssql
     #asia:    
         #<<: *mssql-base
         #container_name: asia
@@ -121,6 +121,7 @@ services:
             Serilog__Properties__Application: "CommentService"
             OpenTelemetry__ServiceName: "CommentService"
             Migrations__RunOnStartup: "false"
+            Redis__ConnectionString: "redis:6379,abortConnect=false"
             ConnectionStrings__CommentDatabase: "Server=commentdatabase,1433;Database=CommentDB;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             profanityservice__BaseUrl: "http://profanityservice:8080"
         depends_on:
@@ -130,6 +131,7 @@ services:
                 condition: service_started
             seq:
                 condition: service_started
+            redis: { condition: service_started }
         ports:
         - "8006:8080"
     
@@ -178,7 +180,8 @@ services:
             Serilog__Properties__Application: "ArticleService"
             OpenTelemetry__ServiceName: "ArticleService"
             RabbitMQ__QueueName: "article-service.events"
-            Migrations__RunOnStartup: "false"
+            Migrations__RunOnStartup: "true"
+            Redis__ConnectionString: "redis:6379,abortConnect=false"
             ConnectionStrings__Articles__Global: "Server=global,1433;Database=Articles_Global;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             ConnectionStrings__Articles__Africa: "Server=africa,1433;Database=Articles_Africa;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
             ConnectionStrings__Articles__Antarctica: "Server=antarctica,1433;Database=Articles_Antarctica;User Id=sa;Password=Password123!;Encrypt=True;TrustServerCertificate=true;MultipleActiveResultSets=true"
@@ -190,7 +193,7 @@ services:
         depends_on:
             rabbitmq:      { condition: service_healthy }
             global:        { condition: service_healthy }
-            #europe:        { condition: service_healthy }
+            europe:        { condition: service_healthy }
             #asia:          { condition: service_healthy }
             #africa:        { condition: service_healthy }
             #northamerica:  { condition: service_healthy }
@@ -199,6 +202,7 @@ services:
             #australia:     { condition: service_healthy }
             otel-collector: { condition: service_started }
             seq: { condition: service_started }
+            redis: { condition: service_started }
         ports:
         - "8000:8080"
     
@@ -270,19 +274,22 @@ services:
         command: ["redis-server", "--save", "''","--appendonly", "no"]
         ports:
             - "6379:6379"
-        networks: [happyheadlines]
-        restarted: unless-stopped
+    
+    redis-exporter:
+        image: oliver006/redis_exporter:latest
+        container_name: redis-exporter
+        command: ["--redis.addr=redis:6379"]
+        depends_on:
+            - redis
 
     prometheus:
         image: prom/prometheus:latest
         container_name: prometheus
         command: ["--config.file=/etc/prometheus/prometheus.yml"]
         volumes:
-            - ./observability/prometheus/prometheus.yml:/etc/prometheus/promethus.yml:ro
+            - ./observability/prometheus:/etc/prometheus:ro
         ports:
             - "9090:9090"
-        networks: [happyheadlines]
-        restarted: unless-stopped
 
     grafana:
         image: grafana/grafana:latest
@@ -297,8 +304,7 @@ services:
         ports:
             - "3000:3000"
         depends_on: [prometheus]
-        networks: [happyheadlines]
-        restarted: unless-stopped
+        
 
 volumes:
     mssql-global:

@@ -14,6 +14,10 @@ namespace ArticleService.Data
         private readonly IArticleCache _cache = cache;
 
         private readonly bool _cacheEnabled = config.GetValue("ArticleCache:Enabled", true);
+
+        private static Continent Normalize(Continent? c) => c ?? Continent.Global;
+
+        private static bool IsGlobal(Continent c) => c == Continent.Global;
         //private readonly Shared.Messaging.ArticleQueue.Interface.IArticleQueue _articleQueue = articleQueue;
 
         // Removed CreateAsync - Added PersistFromEvent instead
@@ -53,7 +57,8 @@ namespace ArticleService.Data
         public async Task<ArticleReadDTO> PersistFromEventAsync(Guid correlationId, string title, string content,
             Continent? continent, DateTime publishedDate, CancellationToken ct)
         {
-            var repo = continent is null ? _factory.CreateGlobal() : _factory.CreateForContinent(continent.Value);
+            var shard = Normalize(continent);
+            var repo = IsGlobal(shard)? _factory.CreateGlobal() : _factory.CreateForContinent(shard);
 
             if (repo is ArticleRepository ar && await ar.TryGetByCorrelationId(correlationId, ct) is { } existing)
             {
@@ -67,7 +72,7 @@ namespace ArticleService.Data
             {
                 Title = title,
                 Content = content,
-                Continent = continent,
+                Continent = shard,
                 PublishedDate = publishedDate,
                 CorrelationId = correlationId
             };
@@ -97,13 +102,14 @@ namespace ArticleService.Data
         
         public async Task<ArticleReadDTO?> GetAsync(int id, Continent? continent, bool includeGlobalFallBack, CancellationToken ct)
         {
+            var shard = Normalize(continent);
             if (_cacheEnabled)
             {
                 var (cached, hit) = await _cache.TryGet(id, continent, ct);
                 if (hit) return cached;
             }
 
-            if (continent is not null)
+            if (!IsGlobal(shard))
             {
                 var continentRepo = _factory.CreateForContinent(continent.Value);
                 var fromContinent = await continentRepo.GetAsync(id, ct);
@@ -118,7 +124,7 @@ namespace ArticleService.Data
                 if(includeGlobalFallBack)
                 {
                     
-                     return await GetAsync(id, null, false, ct);
+                     return await GetAsync(id, Continent.Global, false, ct);
                     
                 }
 
@@ -136,14 +142,15 @@ namespace ArticleService.Data
 
         public async Task<IReadOnlyList<ArticleReadDTO>> GetListAsync(Continent? continent, int page, int pageSize, bool includeGlobal, CancellationToken ct)
         {
+            var shard = Normalize(continent);
             var skip = (page - 1) * pageSize;
             
 
-            if (continent is null)
+            if (IsGlobal(shard))
             {
                 if (_cacheEnabled)
                 {
-                    var cached = await _cache.GetRecent(null, skip, pageSize, ct);
+                    var cached = await _cache.GetRecent(Continent.Global, skip, pageSize, ct);
                     if (cached.Count > 0) return cached.ToList();
                 }
 
@@ -151,7 +158,7 @@ namespace ArticleService.Data
                 var onlyGlobal = await repo.GetPagedAsync(skip, pageSize, ct);
                 var list = onlyGlobal.Select(Map).ToList();
 
-                if (_cacheEnabled) foreach (var a in list) await _cache.Upsert(a, null, ct);
+                if (_cacheEnabled) foreach (var a in list) await _cache.Upsert(a, Continent.Global, ct);
                 return list;
             }
 
@@ -159,17 +166,17 @@ namespace ArticleService.Data
             IReadOnlyList<ArticleReadDTO> continentSlice;
             if (_cacheEnabled)
             {
-                continentSlice = await _cache.GetRecent(continent, skip, pageSize, ct);
+                continentSlice = await _cache.GetRecent(shard, skip, pageSize, ct);
                 if (continentSlice.Count == 0)
                 {
-                    var cRepo = _factory.CreateForContinent(continent.Value);
+                    var cRepo = _factory.CreateForContinent(shard);
                     var fromDb = await cRepo.GetPagedAsync(skip, pageSize, ct);
                     continentSlice = fromDb.Select(Map).ToList();
                 }
             }
             else
             {
-                var cRepo = _factory.CreateForContinent(continent.Value);
+                var cRepo = _factory.CreateForContinent(shard);
                 var fromDb = await cRepo.GetPagedAsync(skip, pageSize, ct);
                 continentSlice = fromDb.Select(Map).ToList();
             }
@@ -180,7 +187,7 @@ namespace ArticleService.Data
             IReadOnlyList<ArticleReadDTO> globalSlice;
             if (_cacheEnabled)
             {
-                globalSlice = await _cache.GetRecent(null, skip, pageSize, ct);
+                globalSlice = await _cache.GetRecent(Continent.Global, skip, pageSize, ct);
                 if (globalSlice.Count == 0)
                 {
                     var gRepo = _factory.CreateGlobal();
@@ -198,7 +205,8 @@ namespace ArticleService.Data
 
         public async Task<bool> UpdateAsync(int id, Continent? continent, ArticleUpdateDTO dto, CancellationToken ct)
         {
-            var repo = continent is null? _factory.CreateGlobal() : _factory.CreateForContinent(continent.Value);
+            var shard = Normalize(continent);
+            var repo = IsGlobal(shard) ? _factory.CreateGlobal() : _factory.CreateForContinent(shard);
             var existing = await repo.GetAsync(id, ct);
             if (existing is null) return false;
 
@@ -206,13 +214,14 @@ namespace ArticleService.Data
             existing.Content = dto.Content;
 
             await repo.UpdateAsync(existing, ct);
-            if (_cacheEnabled) await _cache.Invalidate(id, continent, ct);
+            if (_cacheEnabled) await _cache.Invalidate(id, shard, ct);
             return true;
         }
 
         public async Task<bool> DeleteAsync(int id, Continent? continent, CancellationToken ct)
         {
-            var repo = continent is null ? _factory.CreateGlobal() : _factory.CreateForContinent(continent.Value);
+            var shard = Normalize(continent);
+            var repo = IsGlobal(shard) ? _factory.CreateGlobal() : _factory.CreateForContinent(shard);
             var existing = await repo.GetAsync(id, ct);
             if (existing is null) return false;
 
