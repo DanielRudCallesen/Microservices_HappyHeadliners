@@ -10,13 +10,11 @@ namespace CommentService.Clients
         private readonly HttpClient _http = http;
         private readonly ILogger<ArticleExistenceHttpClient> _logger = logger;
 
-        public async Task<bool> Exists(int articleId, string? continent, CancellationToken ct)
+        public async Task<bool> Exists(int articleId, CancellationToken ct)
         {
-            var uri = continent is null
-                ? $"Article/{articleId}"
-                : $"Article/{articleId}?continent={Uri.EscapeDataString(continent)}&includeGlobalFallBack=true";
+            
 
-            var resp = await _http.GetAsync(uri, ct);
+            var resp = await _http.GetAsync($"Article/{articleId}?searchAll=true", ct);
             if (resp.StatusCode == HttpStatusCode.OK) return true;
             if (resp.StatusCode == HttpStatusCode.NotFound) return false;
 

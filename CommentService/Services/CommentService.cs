@@ -24,7 +24,7 @@ namespace CommentService.Services
             if (string.IsNullOrWhiteSpace(dto.Content)) throw new ArgumentException("Content is required");
 
 
-            var exists = await _articleClient.Exists(dto.ArticleId, dto.Continent, ct);
+            var exists = await _articleClient.Exists(dto.ArticleId, ct);
             if (!exists)
             {
                 throw new ArticleNotFoundException(dto.ArticleId);

@@ -2,6 +2,6 @@
 {
     public interface IArticleExistenceClient
     {
-        Task<bool> Exists(int articleId, string? continent, CancellationToken ct);
+        Task<bool> Exists(int articleId, CancellationToken ct);
     }
 }

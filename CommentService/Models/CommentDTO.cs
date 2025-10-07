@@ -2,7 +2,7 @@
 {
     public class CommentDTO
     {
-        public record CommentCreateDto(int ArticleId, string UserId, string UserName, string Content, string? Continent = null);
+        public record CommentCreateDto(int ArticleId, string UserId, string UserName, string Content);
 
         public record CommentReadDto(
             int Id,
