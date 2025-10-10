@@ -128,7 +128,7 @@ namespace CommentService.Caching
             if (count <= _maxArticles) return;
 
             var over = (int)(count - _maxArticles);
-            var victims = await db.SortedSetRangeByRankAsync(LruZSet, 0, over - 1, Order.Ascending);
+            var victims = await db.SortedSetRangeByRankAsync(LruZSet, 0, over - 1);
             if (victims.Length == 0) return;
 
             var batch = db.CreateBatch();

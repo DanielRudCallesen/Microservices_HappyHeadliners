@@ -1,0 +1,207 @@
+{
+  "title": "HappyHeadlines Cache Hit Ratio",
+  "uid": "happy-cache-hit-ratio",
+  "schemaVersion": 38,
+  "version": 4,
+  "editable": true,
+  "refresh": "10s",
+  "timezone": "browser",
+  "templating": {
+    "list": [
+      {
+        "name": "window",
+        "type": "constant",
+        "label": "Rate window",
+        "query": "5m",
+        "current": {
+          "text": "5m",
+          "value": "5m"
+        }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Article Cache Hit Ratio (ArticleService)",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "100 * ((sum(cache_article_hit_total{job=\"article-service\"}) or on() vector(0)) / clamp_min(((sum(cache_article_hit_total{job=\"article-service\"}) or on() vector(0)) + (sum(cache_article_miss_total{job=\"article-service\"}) or on() vector(0))), 1e-9))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red" },
+              {
+                "color": "yellow",
+                "value": 80
+              },
+              {
+                "color": "green",
+                "value": 90
+              }
+            ]
+          }
+        }
+      },
+      "options": { "reduceOptions": { "calcs": [ "lastNotNull" ] } }
+    },
+    {
+      "type": "stat",
+      "title": "Comment Cache Hit Ratio (CommentService)",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "100 * ((sum(cache_comment_hit_total{job=\"comment-service\"}) or on() vector(0)) / clamp_min(((sum(cache_comment_hit_total{job=\"comment-service\"}) or on() vector(0)) + (sum(cache_comment_miss_total{job=\"comment-service\"}) or on() vector(0))), 1e-9))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red" },
+              {
+                "color": "yellow",
+                "value": 80
+              },
+              {
+                "color": "green",
+                "value": 90
+              }
+            ]
+          }
+        }
+      },
+      "options": { "reduceOptions": { "calcs": [ "lastNotNull" ] } }
+    },
+    {
+      "type": "timeseries",
+      "title": "Article Cache Hit/Miss (last $window)",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "(sum by (__name__)(increase(cache_article_hit_total{job=\"article-service\"}[$window])) or on() vector(0))"
+        },
+        {
+          "datasource": "Prometheus",
+          "expr": "(sum by (__name__)(increase(cache_article_miss_total{job=\"article-service\"}[$window])) or on() vector(0))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Comment Cache Hit/Miss (last $window)",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "(sum by (__name__)(increase(cache_comment_hit_total{job=\"comment-service\"}[$window])) or on() vector(0))"
+        },
+        {
+          "datasource": "Prometheus",
+          "expr": "(sum by (__name__)(increase(cache_comment_miss_total{job=\"comment-service\"}[$window])) or on() vector(0))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right"
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Comment Evictions (last $window)",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 12,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(increase(cache_comment_evictions_total{job=\"comment-service\"}[$window])) or on() vector(0)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Comment Skipped (too large) (last $window)",
+      "gridPos": {
+        "x": 12,
+        "y": 12,
+        "w": 12,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(increase(cache_comment_skip_large_total{job=\"comment-service\"}[$window])) or on() vector(0)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0
+        }
+      }
+    }
+  ]
+}

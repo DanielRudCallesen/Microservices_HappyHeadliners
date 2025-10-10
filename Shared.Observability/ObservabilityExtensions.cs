@@ -71,7 +71,7 @@ namespace Shared.Observability;
                         }
                     }).WithMetrics(mp =>
                     {
-                        mp.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation().AddRuntimeInstrumentation().AddPrometheusExporter();
+                        mp.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation().AddRuntimeInstrumentation().AddMeter("HappyHeadlines.Cache").AddPrometheusExporter();
                     });
             }
             catch
