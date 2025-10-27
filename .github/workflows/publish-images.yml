@@ -72,6 +72,6 @@ jobs:
      platforms: linux/amd64
      tags: | 
       ${{ env.REGISTRY }}/${{ steps.meta.outputs.owner }}/${{ steps.meta.outputs.repo }}-${{ matrix.name }}:${{ steps.meta.outputs.raw}}
-      ${{ env.REGISTRY }}/${{ steps.meta.outputs.owner }}/${{ steps.meta.outputs.repo }}-${{ matrix.name }}:${{ steps.meta.outputs.clean }}}
-      ${{ env.REGISTRY }}/${{ steps.meta.outputs.owner }}/${{ steps.meta.outputs.repo }}-${{ matrix.name }}:${{ github.sha }}}
+      ${{ env.REGISTRY }}/${{ steps.meta.outputs.owner }}/${{ steps.meta.outputs.repo }}-${{ matrix.name }}:${{ steps.meta.outputs.clean }}
+      ${{ env.REGISTRY }}/${{ steps.meta.outputs.owner }}/${{ steps.meta.outputs.repo }}-${{ matrix.name }}:${{ github.sha }}
       ${{ env.REGISTRY }}/${{ steps.meta.outputs.owner }}/${{ steps.meta.outputs.repo }}-${{ matrix.name }}:latest
