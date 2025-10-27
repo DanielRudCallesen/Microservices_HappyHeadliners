@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		observability\grafana\provisioning\datasources\datasource.yaml = observability\grafana\provisioning\datasources\datasource.yaml
 		docker-compose.yml = docker-compose.yml
 		observability\prometheus\prometheus.yml = observability\prometheus\prometheus.yml
+		.github\workflows\publish-images.yml = .github\workflows\publish-images.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftService", "DraftService\DraftService.csproj", "{367A8F25-65BE-458E-87C3-0D7565B01146}"

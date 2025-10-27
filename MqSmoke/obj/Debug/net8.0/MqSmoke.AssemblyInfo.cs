@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MqSmoke")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2a88d6a3fe216c6c3c69a4934ebb5fe5094e6f26")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+20489ad93112e53aac0e4aa5819d91bd859065c1")]
 [assembly: System.Reflection.AssemblyProductAttribute("MqSmoke")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MqSmoke")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
