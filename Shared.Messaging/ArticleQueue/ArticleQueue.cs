@@ -121,7 +121,7 @@ namespace Shared.Messaging.ArticleQueue
                 await ch.ExchangeDeclareAsync(exchange: _exchange, type: ExchangeType.Fanout, durable: true,
                     autoDelete: false, cancellationToken: ct).ConfigureAwait(false);
 
-                // (Optional) proactively ensure queue & binding so publishes succeed even if subscriber not yet running.
+                // proactively ensure queue & binding so publishes succeed even if subscriber not yet running.
                 if (_ensureQueueOnPublish && !string.IsNullOrWhiteSpace(_queueName))
                 {
                     await ch.QueueDeclareAsync(queue: _queueName,
